@@ -78,7 +78,9 @@ has connection_builder => (
     default => sub {
         sub {
             require Net::Stomp;
-            Net::Stomp->new($_[0]);
+            my $ret = Net::Stomp->new($_[0]);
+            $ret->connect();
+            return $ret;
         }
     },
 );
