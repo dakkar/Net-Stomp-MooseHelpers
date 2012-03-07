@@ -4,6 +4,7 @@ use MooseX::Types::Path::Class;
 use Moose::Util 'apply_all_roles';
 use Time::HiRes ();
 use File::Temp ();
+use Net::Stomp::Frame;
 use namespace::autoclean;
 
 # ABSTRACT: role to wrap the Net::Stomp connection in tracing code
@@ -42,14 +43,14 @@ generate a warning.
 
 =cut
 
-has '+trace' => ( default => 1 );
+sub trace { 1 }
 
 around '_build_connection' => sub {
     my ($orig,$self,@etc) = @_;
 
     my $conn = Net::Stomp::MooseHelpers::TraceOnly::Connection->new({
         _tracing_object => $self,
-    );
+    });
     return $conn;
 };
 
