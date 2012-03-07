@@ -8,11 +8,12 @@ use namespace::autoclean;
 
 # ABSTRACT: role to wrap the Net::Stomp connection in tracing code
 
+with 'Net::Stomp::MooseHelpers::TracerRole';
+
 =head1 SYNOPSIS
 
   package MyThing;
-  use Moose;
-  with 'Net::Stomp::MooseHelpers::CanConnect';
+  use Moose;with 'Net::Stomp::MooseHelpers::CanConnect';
   with 'Net::Stomp::MooseHelpers::TraceStomp';
 
   $self->trace_basedir('/tmp/stomp_dumpdir');
@@ -29,19 +30,12 @@ conversion happens), one file per frame. Each frame is written into a
 directory under L</trace_basedir> with a name derived from the frame
 destination.
 
+
 =attr C<trace_basedir>
 
 The directory under which frames will be dumped. Accepts strings and
 L<Path::Class::Dir> objects. If it's not specified and you enable
 L</trace>, every frame will generate a warning.
-
-=cut
-
-has trace_basedir => (
-    is => 'rw',
-    isa => 'Path::Class::Dir',
-    coerce => 1,
-);
 
 =attr C<trace>
 
@@ -50,69 +44,6 @@ you enable tracing but don't set L</trace_basedir>, every frame will
 generate a warning.
 
 =cut
-
-has trace => (
-    is => 'rw',
-    isa => 'Bool',
-    default => 0,
-);
-
-=method C<_dirname_from_destination>
-
-Generate a directory name from a frame destination. By default,
-replaces every non-word character with C<'_'>.
-
-=cut
-
-sub _dirname_from_destination {
-    my ($self,$destination) = @_;
-
-    return '' unless defined $destination;
-
-    my $ret = $destination;
-    $ret =~ s/\W+/_/g;
-    return $ret;
-}
-
-=method C<_filename_from_frame>
-
-Returns a filehandle / filename pair for the file to write the frame
-into. Avoids duplicates by using L<Time::HiRes>'s C<time> as a
-starting filename, and L<File::Temp>.
-
-=cut
-
-sub _filename_from_frame {
-    my ($self,$frame,$direction) = @_;
-
-    my $base = sprintf '%0.5f',Time::HiRes::time();
-    my $dir = $self->trace_basedir->subdir(
-        $self->_dirname_from_destination($frame->headers->{destination})
-    );
-    $dir->mkpath;
-
-    return File::Temp::tempfile("${base}-${direction}-XXXX",
-                                DIR => $dir->stringify);
-}
-
-sub _save_frame {
-    my ($self,$frame,$direction) = @_;
-
-    return unless $self->trace;
-    return unless $frame;
-    $direction||='';
-
-    if (!$self->trace_basedir) {
-        warn "trace_basedir not set, but tracing requested, ignoring\n";
-        return;
-    }
-
-    my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
-    binmode $fh;
-    syswrite $fh,$frame->as_string;
-    close $fh;
-    return;
-}
 
 around '_build_connection' => sub {
     my ($orig,$self,@etc) = @_;
