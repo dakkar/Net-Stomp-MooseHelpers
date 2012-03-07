@@ -7,7 +7,7 @@ use File::Temp ();
 use Net::Stomp::Frame;
 use namespace::autoclean;
 
-# ABSTRACT: role to wrap the Net::Stomp connection in tracing code
+# ABSTRACT: role to replace the Net::Stomp connection with tracing code
 
 with 'Net::Stomp::MooseHelpers::TracerRole';
 
@@ -18,7 +18,6 @@ with 'Net::Stomp::MooseHelpers::TracerRole';
   with 'Net::Stomp::MooseHelpers::TraceOnly';
 
   $self->trace_basedir('/tmp/stomp_dumpdir');
-
 
 B<NOTE>: a C<CanConnect> consuming this role will never talk to the
 network, and will C<die> if asked to receive frames.
@@ -93,5 +92,20 @@ sub send {
 
 __PACKAGE__->meta->make_immutable;
 }
+
+
+=begin Pod::Coverage
+
+trace
+
+connect
+subscribe
+unsubscribe
+ack
+receive_frame
+send_frame
+send
+
+=end Pod::Coverage
 
 1;

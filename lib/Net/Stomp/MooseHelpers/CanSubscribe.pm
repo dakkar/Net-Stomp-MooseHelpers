@@ -29,7 +29,7 @@ use namespace::autoclean;
 This role provides your class with a flexible way to define
 subscriptions to a STOMP server, and to actually subscribe.
 
-B<NOTE>: as shown in the L</synopsis>, you need 2 separate calls the
+B<NOTE>: as shown in the synopsis, you need 2 separate calls the
 C<with>, otherwise the roles won't apply. The reason is that this role
 requires a C<connection> attribute, that is provided by
 L<Net::Stomp::MooseHelpers::CanConnect>, but the role dependency

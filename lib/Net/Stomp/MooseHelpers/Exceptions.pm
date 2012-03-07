@@ -22,24 +22,26 @@ library threw.
 
 =cut
 
-{package Net::Stomp::MooseHelpers::Exceptions::Stringy;
- use Moose::Role;
- use MooseX::Role::WithOverloading;
-  use overload
-  q{""}    => 'as_string',
-  fallback => 1;
- requires 'as_string';
+{
+package Net::Stomp::MooseHelpers::Exceptions::Stringy;
+use Moose::Role;
+use MooseX::Role::WithOverloading;
+use overload
+    q{""}    => 'as_string',
+        fallback => 1;
+requires 'as_string';
 }
-{package Net::Stomp::MooseHelpers::Exceptions::Stomp;
- use Moose;with 'Throwable','Net::Stomp::MooseHelpers::Exceptions::Stringy';
- use namespace::autoclean;
- has '+previous_exception' => (
-     init_arg => 'stomp_error',
- );
- sub as_string {
-     return 'STOMP protocol/network error:'.$_[0]->previous_exception;
- }
- __PACKAGE__->meta->make_immutable;
+{
+package Net::Stomp::MooseHelpers::Exceptions::Stomp;
+use Moose;with 'Throwable','Net::Stomp::MooseHelpers::Exceptions::Stringy';
+use namespace::autoclean;
+has '+previous_exception' => (
+    init_arg => 'stomp_error',
+);
+sub as_string {
+    return 'STOMP protocol/network error:'.$_[0]->previous_exception;
+}
+__PACKAGE__->meta->make_immutable;
 }
 
 1;

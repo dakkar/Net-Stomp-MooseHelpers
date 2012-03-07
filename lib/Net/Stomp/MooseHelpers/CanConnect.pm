@@ -32,14 +32,13 @@ use namespace::autoclean;
         $exception = $_;
       };
       if ($exception) {
-        if (!blessed $exception) {
-          die "unhandled exception $exception";
-        }
-        if ($exception->isa('Net::Stomp::MooseHelpers::Exceptions::Stomp')) {
+        if (blessed $exception &&
+            $exception->isa('Net::Stomp::MooseHelpers::Exceptions::Stomp')) {
           warn "connection died, trying next server\n";
           $self->clear_connection;
           next SERVER_LOOP;
         }
+        die "unhandled exception $exception";
       }
     }
   }
@@ -53,8 +52,8 @@ round-robin fashion.
 =attr C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder>, rotating servers via L</next_server>. It's
-usually a L<Net::Stomp> object.
+L</connection_builder> (passing C<hostname> and C<port>), rotating
+servers via L</next_server>. It's usually a L<Net::Stomp> object.
 
 =cut
 

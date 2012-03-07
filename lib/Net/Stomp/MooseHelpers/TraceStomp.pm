@@ -30,7 +30,6 @@ conversion happens), one file per frame. Each frame is written into a
 directory under L</trace_basedir> with a name derived from the frame
 destination.
 
-
 =attr C<trace_basedir>
 
 The directory under which frames will be dumped. Accepts strings and
@@ -54,7 +53,8 @@ around '_build_connection' => sub {
     return $conn;
 };
 
-package Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper;{
+{
+package Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper;
 use Moose::Role;
 
 has _tracing_object => ( is => 'rw' );

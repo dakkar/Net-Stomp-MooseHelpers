@@ -51,8 +51,7 @@ A hashref having a C<hostname> key (with value matching L</Hostname>),
 a C<port> key (value matching L</PortNumber>), and optionally a
 C<connect_headers> key (with a hashref value) and a
 C<subscribe_headers> key (with a hashref value). See
-L<Plack::Handler::Stomp/connect> and
-L<Plack::Handler::Stomp/subscribe>.
+L<Net::Stomp::MooseHelpers::CanConnect/connect>.
 
 =cut
 
@@ -86,7 +85,7 @@ subtype Headers, as Map[Str,Value];
 A hashref having a C<destination> key (with a value matching
 L</Destination>), and optionally a C<path_info> key (with value
 matching L</Path>) and a C<headers> key (with a hashref value). See
-L<Plack::Handler::Stomp/subscribe>.
+L<Net::Stomp::MooseHelpers::CanSubscribe/subscribe>.
 
 =cut
 

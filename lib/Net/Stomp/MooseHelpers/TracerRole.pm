@@ -13,7 +13,7 @@ This role is not to be used directly, look at
 L<Net::Stomp::MooseHelpers::TraceStomp> and
 L<Net::Stomp::MooseHelpers::TraceOnly>.
 
-This module provides attributes and methods to write to disk every
+This role provides attributes and methods to write to disk every
 outgoing and incoming STOMP frame.
 
 The frames are written as they are "on the wire" (no encoding
@@ -52,7 +52,7 @@ has trace => (
 =method C<_dirname_from_destination>
 
 Generate a directory name from a frame destination. By default,
-replaces every non-word character with C<'_'>.
+replaces every sequence of non-word characters with C<'_'>.
 
 =cut
 
