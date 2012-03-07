@@ -1,0 +1,74 @@
+
+use strict;
+use warnings;
+
+
+
+use ExtUtils::MakeMaker 6.30;
+
+
+
+my %WriteMakefileArgs = (
+  "ABSTRACT" => "set of helper roles and types to deal with Net::Stomp",
+  "AUTHOR" => "Gianni Ceccarelli <gianni.ceccarelli\@net-a-porter.com>",
+  "BUILD_REQUIRES" => {
+    "Test::More" => 0,
+    "strict" => 0,
+    "warnings" => 0
+  },
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "Net-Stomp-MooseHelpers",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "Net::Stomp::MooseHelpers",
+  "PREREQ_PM" => {
+    "Carp" => 0,
+    "File::Temp" => 0,
+    "Moose" => 0,
+    "Moose::Role" => 0,
+    "Moose::Util" => 0,
+    "MooseX::Role::WithOverloading" => 0,
+    "MooseX::Types" => 0,
+    "MooseX::Types::Common::Numeric" => 0,
+    "MooseX::Types::Moose" => 0,
+    "MooseX::Types::Path::Class" => 0,
+    "MooseX::Types::Structured" => 0,
+    "Net::Stomp" => 0,
+    "Net::Stomp::Frame" => 0,
+    "Net::Stomp::MooseHelpers::Exceptions::Stringy" => 0,
+    "Path::Class" => 0,
+    "Throwable" => 0,
+    "Time::HiRes" => 0,
+    "Try::Tiny" => 0,
+    "namespace::autoclean" => 0,
+    "overload" => 0
+  },
+  "VERSION" => "0.0.1",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
+);
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+
