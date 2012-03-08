@@ -1,5 +1,5 @@
 package Net::Stomp::MooseHelpers::Exceptions;
-# ABSTRACT: exception classes for Plack::Handler::Stomp
+# ABSTRACT: exception classes for Net::Stomp::MooseHelpers
 
 =head1 DESCRIPTION
 
