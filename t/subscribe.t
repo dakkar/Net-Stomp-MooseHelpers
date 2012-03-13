@@ -39,6 +39,7 @@ is(exception {
         servers => [ {
             hostname => 'test-host', port => 9999,
             subscribe_headers => { server_level => 'header' },
+            connect_headers => { server_level => 'connect' },
         } ],
         connect_headers => { foo => 'bar' },
         subscribe_headers => { global => 'header' },
@@ -62,7 +63,10 @@ cmp_deeply(\@CallBacks::calls,
                [
                    'connect',
                    ignore(),
-                   { foo => 'bar' },
+                   {
+                       foo => 'bar',
+                       server_level => 'connect',
+                   },
                ],
                [
                    'subscribe',
