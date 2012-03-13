@@ -31,6 +31,7 @@ package main;
 use Test::More;
 use Test::Fatal;
 use Test::Deep;
+use Data::Printer;
 
 my $obj;
 is(exception {
@@ -87,7 +88,8 @@ cmp_deeply(\@CallBacks::calls,
                    }
                ],
            ],
-           'STOMP connect called with expected params');
+           'STOMP connect called with expected params')
+    or note p @CallBacks::calls;
 
 done_testing();
 

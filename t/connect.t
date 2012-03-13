@@ -3,7 +3,11 @@ use strict;
 use warnings;
 {package CallBacks;
  our @calls;
- sub new { bless {},shift }
+ sub new {
+     my ($class,@args) = @_;
+     push @calls,['new',$class,@args];
+     bless {},$class;
+ }
  for my $m (qw(connect
                subscribe unsubscribe
                receive_frame ack
@@ -21,7 +25,7 @@ use warnings;
 
  has '+connection_builder' => (
      default => sub { sub {
-         return CallBacks->new();
+         return CallBacks->new(@_);
      } },
  );
 }
@@ -30,6 +34,7 @@ package main;
 use Test::More;
 use Test::Fatal;
 use Test::Deep;
+use Data::Printer;
 
 my $obj;
 is(exception {
@@ -42,12 +47,20 @@ is(exception {
 },undef,'can build & connect');
 
 cmp_deeply(\@CallBacks::calls,
-           [ [
-               'connect',
-               ignore(),
-               { foo => 'bar' },
-           ] ],
-           'STOMP connect called with expected params');
+           [
+               [
+                   'new',
+                   'CallBacks',
+                   { hostname => 'test-host', port => 9999 },
+               ],
+               [
+                   'connect',
+                   ignore(),
+                   { foo => 'bar' },
+               ],
+           ],
+           'STOMP connect called with expected params')
+    or note p @CallBacks::calls;
 
 done_testing();
 
