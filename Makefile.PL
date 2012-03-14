@@ -47,7 +47,7 @@ my %WriteMakefileArgs = (
     "namespace::autoclean" => 0,
     "overload" => 0
   },
-  "VERSION" => "0.0.1",
+  "VERSION" => "0.1_01",
   "test" => {
     "TESTS" => "t/*.t"
   }
