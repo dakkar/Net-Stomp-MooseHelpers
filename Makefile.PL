@@ -40,7 +40,6 @@ my %WriteMakefileArgs = (
     "MooseX::Types::Structured" => 0,
     "Net::Stomp" => 0,
     "Net::Stomp::Frame" => 0,
-    "Net::Stomp::MooseHelpers::Exceptions::Stringy" => 0,
     "Path::Class" => 0,
     "Throwable" => 0,
     "Time::HiRes" => 0,
