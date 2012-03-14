@@ -5,7 +5,7 @@ package Net::Stomp::MooseHelpers::Exceptions;
 {
   $Net::Stomp::MooseHelpers::Exceptions::DIST = 'Net-Stomp-MooseHelpers';
 }
-# ABSTRACT: exception classes for Plack::Handler::Stomp
+# ABSTRACT: exception classes for Net::Stomp::MooseHelpers
 
 
 {
@@ -51,7 +51,7 @@ __END__
 
 =head1 NAME
 
-Net::Stomp::MooseHelpers::Exceptions - exception classes for Plack::Handler::Stomp
+Net::Stomp::MooseHelpers::Exceptions - exception classes for Net::Stomp::MooseHelpers
 
 =head1 VERSION
 
