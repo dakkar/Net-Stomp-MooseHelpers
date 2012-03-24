@@ -1,4 +1,10 @@
 package Net::Stomp::MooseHelpers::TracerRole;
+{
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.0';
+}
+{
+  $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
+}
 use Moose::Role;
 use MooseX::Types::Path::Class;
 use Time::HiRes ();
@@ -7,27 +13,6 @@ use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
 
-=head1 DESCRIPTION
-
-This role is not to be used directly, look at
-L<Net::Stomp::MooseHelpers::TraceStomp> and
-L<Net::Stomp::MooseHelpers::TraceOnly>.
-
-This role provides attributes and methods to write to disk every
-outgoing and incoming STOMP frame.
-
-The frames are written as they are "on the wire" (no encoding
-conversion happens), one file per frame. Each frame is written into a
-directory under L</trace_basedir> with a name derived from the frame
-destination.
-
-=attr C<trace_basedir>
-
-The directory under which frames will be dumped. Accepts strings and
-L<Path::Class::Dir> objects. If it's not specified and you enable
-L</trace>, every frame will generate a warning.
-
-=cut
 
 has trace_basedir => (
     is => 'rw',
@@ -35,13 +20,6 @@ has trace_basedir => (
     coerce => 1,
 );
 
-=attr C<trace>
-
-Boolean attribute to enable or disable tracing / dumping of frames. If
-you enable tracing but don't set L</trace_basedir>, every frame will
-generate a warning.
-
-=cut
 
 has trace => (
     is => 'rw',
@@ -49,12 +27,6 @@ has trace => (
     default => 0,
 );
 
-=method C<_dirname_from_destination>
-
-Generate a directory name from a frame destination. By default,
-replaces every sequence of non-word characters with C<'_'>.
-
-=cut
 
 sub _dirname_from_destination {
     my ($self,$destination) = @_;
@@ -66,13 +38,6 @@ sub _dirname_from_destination {
     return $ret;
 }
 
-=method C<_filename_from_frame>
-
-Returns a filehandle / filename pair for the file to write the frame
-into. Avoids duplicates by using L<Time::HiRes>'s C<time> as a
-starting filename, and L<File::Temp>.
-
-=cut
 
 sub _filename_from_frame {
     my ($self,$frame,$direction) = @_;
@@ -107,3 +72,71 @@ sub _save_frame {
 }
 
 1;
+
+__END__
+=pod
+
+=encoding utf-8
+
+=head1 NAME
+
+Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
+
+=head1 VERSION
+
+version 1.0
+
+=head1 DESCRIPTION
+
+This role is not to be used directly, look at
+L<Net::Stomp::MooseHelpers::TraceStomp> and
+L<Net::Stomp::MooseHelpers::TraceOnly>.
+
+This role provides attributes and methods to write to disk every
+outgoing and incoming STOMP frame.
+
+The frames are written as they are "on the wire" (no encoding
+conversion happens), one file per frame. Each frame is written into a
+directory under L</trace_basedir> with a name derived from the frame
+destination.
+
+=head1 ATTRIBUTES
+
+=head2 C<trace_basedir>
+
+The directory under which frames will be dumped. Accepts strings and
+L<Path::Class::Dir> objects. If it's not specified and you enable
+L</trace>, every frame will generate a warning.
+
+=head2 C<trace>
+
+Boolean attribute to enable or disable tracing / dumping of frames. If
+you enable tracing but don't set L</trace_basedir>, every frame will
+generate a warning.
+
+=head1 METHODS
+
+=head2 C<_dirname_from_destination>
+
+Generate a directory name from a frame destination. By default,
+replaces every sequence of non-word characters with C<'_'>.
+
+=head2 C<_filename_from_frame>
+
+Returns a filehandle / filename pair for the file to write the frame
+into. Avoids duplicates by using L<Time::HiRes>'s C<time> as a
+starting filename, and L<File::Temp>.
+
+=head1 AUTHOR
+
+Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Net-a-porter.com.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+

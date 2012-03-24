@@ -1,4 +1,10 @@
 package Net::Stomp::MooseHelpers::CanSubscribe;
+{
+  $Net::Stomp::MooseHelpers::CanSubscribe::VERSION = '1.0';
+}
+{
+  $Net::Stomp::MooseHelpers::CanSubscribe::DIST = 'Net-Stomp-MooseHelpers';
+}
 use Moose::Role;
 use Net::Stomp::MooseHelpers::Exceptions;
 use Net::Stomp::MooseHelpers::Types qw(SubscriptionConfigList
@@ -9,41 +15,6 @@ use namespace::autoclean;
 
 # ABSTRACT: role for classes that subscribe via Net::Stomp
 
-=head1 SYNOPSIS
-
-  package MyThing;
-  use Moose;
-  with 'Net::Stomp::MooseHelpers::CanConnect';
-  with 'Net::Stomp::MooseHelpers::CanSubscribe';
-  use Try::Tiny;
-
-  sub foo {
-    my ($self) = @_;
-    $self->connect();
-    $self->subscribe();
-    do_something( $self->connection->receive_frame() );
-  }
-
-=head1 DESCRIPTION
-
-This role provides your class with a flexible way to define
-subscriptions to a STOMP server, and to actually subscribe.
-
-B<NOTE>: as shown in the synopsis, you need 2 separate calls the
-C<with>, otherwise the roles won't apply. The reason is that this role
-requires a C<connection> attribute, that is provided by
-L<Net::Stomp::MooseHelpers::CanConnect>, but the role dependency
-resolution does not notice that.
-
-=attr C<subscribe_headers>
-
-Global setting for subscription headers (passed to
-L<Net::Stomp/subscribe>). Can be overridden by the
-C<subscribe_headers> slot in each element of L</servers> and by the
-C<headers> slot in each element fof L</subscriptions>. Defaults to
-the empty hashref.
-
-=cut
 
 has subscribe_headers => (
     is => 'ro',
@@ -53,16 +24,6 @@ has subscribe_headers => (
 );
 sub _default_subscribe_headers { { } }
 
-=attr C<subscriptions>
-
-A
-L<SubscriptionConfigList|Net::Stomp::MooseHelpers::Types/SubscriptionConfigList>,
-that is, an arrayref of hashrefs, each of which describes a
-subscription. Defaults to the empty arrayref. You should set this
-value to something useful, otherwise your connection will not receive
-any message.
-
-=cut
 
 has subscriptions => (
     is => 'ro',
@@ -75,19 +36,6 @@ sub _default_subscriptions { [] }
 
 requires 'connection','current_server';
 
-=method C<subscribe>
-
-Call L</subscribe_single> method for each element of
-L</subscriptions>, passing the generic L</subscribe_headers>, the
-per-server subscribe headers (from
-L<current_server|Net::Stomp::MooseHelpers::CanConnect/current_server>,
-slot C<subscribe_headers>) and the per-subscription subscribe headers
-(from L</subscriptions>, slot C<headers>).
-
-Throws a L<Net::Stomp::MooseHelpers::Exceptions::Stomp> if anything
-goes wrong.
-
-=cut
 
 sub subscribe {
     my ($self) = @_;
@@ -124,17 +72,6 @@ sub subscribe {
     };
 }
 
-=method C<subscribe_single>
-
-  $self->subscribe_single($subscription,$headers);
-
-Call the C<subscribe> method on L</connection>, passing the
-C<$headers>.
-
-You can override or modify this method in your class if you need to
-perform more work on each subscription.
-
-=cut
 
 sub subscribe_single {
     my ($self,$subscription,$headers) = @_;
@@ -145,3 +82,99 @@ sub subscribe_single {
 }
 
 1;
+
+__END__
+=pod
+
+=encoding utf-8
+
+=head1 NAME
+
+Net::Stomp::MooseHelpers::CanSubscribe - role for classes that subscribe via Net::Stomp
+
+=head1 VERSION
+
+version 1.0
+
+=head1 SYNOPSIS
+
+  package MyThing;
+  use Moose;
+  with 'Net::Stomp::MooseHelpers::CanConnect';
+  with 'Net::Stomp::MooseHelpers::CanSubscribe';
+  use Try::Tiny;
+
+  sub foo {
+    my ($self) = @_;
+    $self->connect();
+    $self->subscribe();
+    do_something( $self->connection->receive_frame() );
+  }
+
+=head1 DESCRIPTION
+
+This role provides your class with a flexible way to define
+subscriptions to a STOMP server, and to actually subscribe.
+
+B<NOTE>: as shown in the synopsis, you need 2 separate calls the
+C<with>, otherwise the roles won't apply. The reason is that this role
+requires a C<connection> attribute, that is provided by
+L<Net::Stomp::MooseHelpers::CanConnect>, but the role dependency
+resolution does not notice that.
+
+=head1 ATTRIBUTES
+
+=head2 C<subscribe_headers>
+
+Global setting for subscription headers (passed to
+L<Net::Stomp/subscribe>). Can be overridden by the
+C<subscribe_headers> slot in each element of L</servers> and by the
+C<headers> slot in each element fof L</subscriptions>. Defaults to
+the empty hashref.
+
+=head2 C<subscriptions>
+
+A
+L<SubscriptionConfigList|Net::Stomp::MooseHelpers::Types/SubscriptionConfigList>,
+that is, an arrayref of hashrefs, each of which describes a
+subscription. Defaults to the empty arrayref. You should set this
+value to something useful, otherwise your connection will not receive
+any message.
+
+=head1 METHODS
+
+=head2 C<subscribe>
+
+Call L</subscribe_single> method for each element of
+L</subscriptions>, passing the generic L</subscribe_headers>, the
+per-server subscribe headers (from
+L<current_server|Net::Stomp::MooseHelpers::CanConnect/current_server>,
+slot C<subscribe_headers>) and the per-subscription subscribe headers
+(from L</subscriptions>, slot C<headers>).
+
+Throws a L<Net::Stomp::MooseHelpers::Exceptions::Stomp> if anything
+goes wrong.
+
+=head2 C<subscribe_single>
+
+  $self->subscribe_single($subscription,$headers);
+
+Call the C<subscribe> method on L</connection>, passing the
+C<$headers>.
+
+You can override or modify this method in your class if you need to
+perform more work on each subscription.
+
+=head1 AUTHOR
+
+Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Net-a-porter.com.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
