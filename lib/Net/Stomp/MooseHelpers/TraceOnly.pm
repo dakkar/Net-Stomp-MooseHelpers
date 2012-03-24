@@ -18,6 +18,7 @@ with 'Net::Stomp::MooseHelpers::TracerRole';
   with 'Net::Stomp::MooseHelpers::TraceOnly';
 
   $self->trace_basedir('/tmp/stomp_dumpdir');
+  $self->trace(1);
 
 B<NOTE>: a C<CanConnect> consuming this role will never talk to the
 network, and will C<die> if asked to receive frames.
