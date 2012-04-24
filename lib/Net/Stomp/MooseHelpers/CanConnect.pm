@@ -89,8 +89,7 @@ sub _build_connection {
     my $server = $self->next_server;
 
     return $self->connection_builder->({
-        hostname => $server->{hostname},
-        port => $server->{port},
+        hosts => $server->{hosts},
     });
 }
 

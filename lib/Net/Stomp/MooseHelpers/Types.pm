@@ -2,13 +2,13 @@ package Net::Stomp::MooseHelpers::Types;
 use MooseX::Types -declare =>
     [qw(
            NetStompish
-           Hostname PortNumber
+           Hostname PortNumber HostPort
            ServerConfig ServerConfigList
            Headers
            SubscriptionConfig SubscriptionConfigList
            Destination
    )];
-use MooseX::Types::Moose qw(Str Value Int ArrayRef HashRef);
+use MooseX::Types::Moose qw(Bool Str Value Int ArrayRef HashRef);
 use MooseX::Types::Structured qw(Dict Optional Map);
 use namespace::autoclean;
 
@@ -55,12 +55,43 @@ L<Net::Stomp::MooseHelpers::CanConnect/connect>.
 
 =cut
 
+subtype HostPort, as Dict[
+    hostname => Hostname,
+    port => PortNumber,
+    ssl => Optional[Bool],
+    ssl_options => Optional[HashRef],
+];
+
+sub _opt {
+    my ($hr,$f) = @_;
+    return () if ! exists $hr->{$f};
+    return ( $f => $hr->{$f} );
+}
+
 subtype ServerConfig, as Dict[
+    hosts => ArrayRef[HostPort],
+    connect_headers => Optional[HashRef],
+    subscribe_headers => Optional[HashRef],
+];
+coerce ServerConfig, from Dict[
     hostname => Hostname,
     port => PortNumber,
     connect_headers => Optional[HashRef],
     subscribe_headers => Optional[HashRef],
-];
+], via {
+    +{
+        hosts => [
+            {
+                hostname => $_->{hostname},
+                port => $_->{port},
+                _opt($_,'ssl'),
+                _opt($_,'ssl_options'),
+            },
+        ],
+        _opt($_,'connect_headers'),
+        _opt($_,'subscribe_headers'),
+    }
+};
 
 =head2 C<ServerConfigList>
 
@@ -70,7 +101,11 @@ L</ServerConfig>.
 =cut
 
 subtype ServerConfigList, as ArrayRef[ServerConfig];
-coerce ServerConfigList, from ServerConfig, via { [shift] };
+coerce ServerConfigList, from ServerConfig, via { [to_ServerConfig($_)] };
+coerce ServerConfigList, from ArrayRef, via {
+    my $input=$_;
+    [ map { to_ServerConfig($_) } @$input ];
+};
 
 =head2 C<Headers>
 

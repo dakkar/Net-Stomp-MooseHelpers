@@ -51,7 +51,7 @@ cmp_deeply(\@CallBacks::calls,
                [
                    'new',
                    'CallBacks',
-                   { hostname => 'test-host', port => 9999 },
+                   { hosts => [ { hostname => 'test-host', port => 9999 } ] },
                ],
                [
                    'connect',
@@ -63,5 +63,3 @@ cmp_deeply(\@CallBacks::calls,
     or note p @CallBacks::calls;
 
 done_testing();
-
-
