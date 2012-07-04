@@ -1,9 +1,6 @@
 package Net::Stomp::MooseHelpers::TraceStomp;
 use Moose::Role;
-use MooseX::Types::Path::Class;
 use Moose::Util 'apply_all_roles';
-use Time::HiRes ();
-use File::Temp ();
 use namespace::autoclean;
 
 # ABSTRACT: role to wrap the Net::Stomp connection in tracing code

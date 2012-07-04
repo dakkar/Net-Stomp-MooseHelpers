@@ -1,9 +1,5 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 use Moose::Role;
-use MooseX::Types::Path::Class;
-use Moose::Util 'apply_all_roles';
-use Time::HiRes ();
-use File::Temp ();
 use Net::Stomp::Frame;
 use namespace::autoclean;
 
