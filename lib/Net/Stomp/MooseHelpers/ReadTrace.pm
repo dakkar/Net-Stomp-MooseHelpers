@@ -114,6 +114,8 @@ sub sorted_filenames {
               _dirname_from_destination($destination)
           );
 
+    return unless -e $dir;
+
     my @files;
     $dir->recurse(
         callback=>sub{
