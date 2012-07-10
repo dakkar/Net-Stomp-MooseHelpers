@@ -1,15 +1,11 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
-use MooseX::Types::Path::Class;
-use Moose::Util 'apply_all_roles';
-use Time::HiRes ();
-use File::Temp ();
 use Net::Stomp::Frame;
 use namespace::autoclean;
 
@@ -31,7 +27,7 @@ around '_build_connection' => sub {
 
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::Connection::DIST = 'Net-Stomp-MooseHelpers';
@@ -88,7 +84,7 @@ Net::Stomp::MooseHelpers::TraceOnly - role to replace the Net::Stomp connection 
 
 =head1 VERSION
 
-version 0.1_02
+version 1.1
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -65,6 +65,8 @@ sub sorted_filenames {
               _dirname_from_destination($destination)
           );
 
+    return unless -e $dir;
+
     my @files;
     $dir->recurse(
         callback=>sub{
@@ -101,7 +103,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 0.1_02
+version 1.1
 
 =head1 SYNOPSIS
 

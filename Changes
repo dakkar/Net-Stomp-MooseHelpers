@@ -1,4 +1,11 @@
-0.1_02    2012-04-24 13:55:06 Europe/London
+1.1       2012-07-10 12:10:01 Europe/London
+- added ReconnectOnFailure, and moved some attributes around
+- 'connect' can now be called multiple times, and is a no-op if we're
+  already connected
+
+BREAKING CHANGES:
+- 'tries_per_server' is gone (was not used)
+- 'connect_retry_delay' is moved to the new role
 
 1.0       2012-03-24 11:02:54 Europe/London
 - first non-devel release

@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanConnect;
 {
-  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::CanConnect::DIST = 'Net-Stomp-MooseHelpers';
@@ -11,8 +11,7 @@ use Net::Stomp::MooseHelpers::Types qw(NetStompish
                                        ServerConfigList
                                        Headers
                                   );
-use MooseX::Types::Common::Numeric qw(PositiveInt);
-use MooseX::Types::Moose qw(CodeRef);
+use MooseX::Types::Moose qw(CodeRef Bool);
 use Try::Tiny;
 use namespace::autoclean;
 
@@ -23,6 +22,18 @@ has connection => (
     is => 'rw',
     isa => NetStompish,
     lazy_build => 1,
+);
+
+
+has is_connected => (
+    traits => ['Bool'],
+    is => 'ro',
+    isa => Bool,
+    default => 0,
+    handles => {
+      _set_disconnected => 'unset',
+      _set_connected => 'set',
+    },
 );
 
 
@@ -83,20 +94,6 @@ sub current_server {
 }
 
 
-has tries_per_server => (
-    is => 'ro',
-    isa => PositiveInt,
-    default => 1,
-);
-
-
-has connect_retry_delay => (
-    is => 'ro',
-    isa => PositiveInt,
-    default => 15,
-);
-
-
 has connect_headers => (
     is => 'ro',
     isa => Headers,
@@ -109,6 +106,8 @@ sub _default_connect_headers { { } }
 sub connect {
     my ($self) = @_;
 
+    return if $self->has_connection and $self->is_connected;
+
     try {
         # the connection will be created by the lazy builder
         $self->connection; # needed to make sure that 'current_server'
@@ -119,6 +118,7 @@ sub connect {
             %{$server->{connect_headers} || {}},
         );
         $self->connection->connect(\%headers);
+        $self->_set_connected;
     } catch {
         Net::Stomp::MooseHelpers::Exceptions::Stomp->throw({
             stomp_error => $_
@@ -139,7 +139,7 @@ Net::Stomp::MooseHelpers::CanConnect - role for classes that connect via Net::St
 
 =head1 VERSION
 
-version 0.1_02
+version 1.1
 
 =head1 SYNOPSIS
 
@@ -186,6 +186,12 @@ The connection to the STOMP server. It's built using the
 L</connection_builder> (passing C<hostname> and C<port>), rotating
 servers via L</next_server>. It's usually a L<Net::Stomp> object.
 
+=head2 C<is_connected>
+
+True if a call to C</connect>
+succeded. L<Net::Stomp::MooseHelpers::ReconnectOnFailure> resets this
+when reconnecting; you should not care much about it.
+
 =head2 C<connection_builder>
 
 Coderef that, given a hashref of options, returns a connection. The
@@ -198,15 +204,6 @@ A L<ServerConfigList|Net::Stomp::MooseHelpers::Types/ServerConfigList>,
 that is, an arrayref of hashrefs, each of which describes how to
 connect to a single server. Defaults to C<< [ { hostname =>
 'localhost', port => 61613 } ] >>.
-
-=head2 C<tries_per_server>
-
-How many times to try to connect to a server before trying the
-L</next_server>. Defaults to 1.
-
-=head2 C<connect_retry_delay>
-
-How many seconds to wait between connection attempts. Defaults to 15.
 
 =head2 C<connect_headers>
 
@@ -232,6 +229,9 @@ Call the C<connect> method on L</connection>, passing the generic
 L</connect_headers> and the per-server connect headers (from
 L</current_server>, slot C<connect_headers>). Throws a
 L<Net::Stomp::MooseHelpers::Exceptions::Stomp> if anything goes wrong.
+
+If the L</connection> attribute is set, and L</is_connected>, returns
+without doing anything.
 
 =head1 AUTHOR
 

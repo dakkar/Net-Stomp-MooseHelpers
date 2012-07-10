@@ -1,15 +1,12 @@
 package Net::Stomp::MooseHelpers::TraceStomp;
 {
-  $Net::Stomp::MooseHelpers::TraceStomp::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::TraceStomp::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceStomp::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
-use MooseX::Types::Path::Class;
 use Moose::Util 'apply_all_roles';
-use Time::HiRes ();
-use File::Temp ();
 use namespace::autoclean;
 
 # ABSTRACT: role to wrap the Net::Stomp connection in tracing code
@@ -29,7 +26,7 @@ around '_build_connection' => sub {
 {
 package Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper;
 {
-  $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::VERSION = '0.1_02';
+  $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::VERSION = '1.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::DIST = 'Net-Stomp-MooseHelpers';
@@ -74,7 +71,7 @@ Net::Stomp::MooseHelpers::TraceStomp - role to wrap the Net::Stomp connection in
 
 =head1 VERSION
 
-version 0.1_02
+version 1.1
 
 =head1 SYNOPSIS
 
