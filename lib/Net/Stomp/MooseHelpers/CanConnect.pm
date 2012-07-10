@@ -6,7 +6,7 @@ use Net::Stomp::MooseHelpers::Types qw(NetStompish
                                        Headers
                                   );
 use MooseX::Types::Common::Numeric qw(PositiveInt);
-use MooseX::Types::Moose qw(CodeRef);
+use MooseX::Types::Moose qw(CodeRef Bool);
 use Try::Tiny;
 use namespace::autoclean;
 
@@ -61,6 +61,25 @@ has connection => (
     is => 'rw',
     isa => NetStompish,
     lazy_build => 1,
+);
+
+=attr C<is_connected>
+
+True if a call to C</connect>
+succeded. L<Net::Stomp::MooseHelpers::ReconnectOnFailure> resets this
+when reconnecting; you should not care much about it.
+
+=cut
+
+has is_connected => (
+    traits => ['Bool'],
+    is => 'ro',
+    isa => Bool,
+    default => 0,
+    handles => {
+      _set_disconnected => 'unset',
+      _set_connected => 'set',
+    },
 );
 
 =attr C<connection_builder>
@@ -147,31 +166,6 @@ sub current_server {
     return $self->servers->[-1];
 }
 
-=attr C<tries_per_server>
-
-How many times to try to connect to a server before trying the
-L</next_server>. Defaults to 1.
-
-=cut
-
-has tries_per_server => (
-    is => 'ro',
-    isa => PositiveInt,
-    default => 1,
-);
-
-=attr C<connect_retry_delay>
-
-How many seconds to wait between connection attempts. Defaults to 15.
-
-=cut
-
-has connect_retry_delay => (
-    is => 'ro',
-    isa => PositiveInt,
-    default => 15,
-);
-
 =attr C<connect_headers>
 
 Global setting for connection headers (passed to
@@ -195,10 +189,15 @@ L</connect_headers> and the per-server connect headers (from
 L</current_server>, slot C<connect_headers>). Throws a
 L<Net::Stomp::MooseHelpers::Exceptions::Stomp> if anything goes wrong.
 
+If the L</connection> attribute is set, and L</is_connected>, returns
+without doing anything.
+
 =cut
 
 sub connect {
     my ($self) = @_;
+
+    return if $self->has_connection and $self->is_connected;
 
     try {
         # the connection will be created by the lazy builder
@@ -210,6 +209,7 @@ sub connect {
             %{$server->{connect_headers} || {}},
         );
         $self->connection->connect(\%headers);
+        $self->_set_connected;
     } catch {
         Net::Stomp::MooseHelpers::Exceptions::Stomp->throw({
             stomp_error => $_
