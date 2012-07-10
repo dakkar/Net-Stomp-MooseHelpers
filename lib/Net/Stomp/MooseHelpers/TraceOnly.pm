@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::DIST = 'Net-Stomp-MooseHelpers';
@@ -27,7 +27,7 @@ around '_build_connection' => sub {
 
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::Connection::DIST = 'Net-Stomp-MooseHelpers';
@@ -84,7 +84,7 @@ Net::Stomp::MooseHelpers::TraceOnly - role to replace the Net::Stomp connection 
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 SYNOPSIS
 
