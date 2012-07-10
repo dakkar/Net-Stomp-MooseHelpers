@@ -1,6 +1,7 @@
 package Net::Stomp::MooseHelpers::ReconnectOnFailure;
 use Moose::Role;
 use Net::Stomp::MooseHelpers::Exceptions;
+use MooseX::Types::Common::Numeric qw(PositiveInt);
 use Carp;
 use Try::Tiny;
 use Time::HiRes 'sleep';
@@ -12,8 +13,8 @@ use namespace::autoclean;
 
   package MyThing;
   use Moose;
-  with 'Net::Stomp::MooseHelpers::CanConnect',
-       'Net::Stomp::MooseHelpers::ReconnectOnFailure';
+  with 'Net::Stomp::MooseHelpers::CanConnect';
+  with 'Net::Stomp::MooseHelpers::ReconnectOnFailure';
 
   sub foo {
     my ($self) = @_;
@@ -37,7 +38,7 @@ How many seconds to wait between connection attempts. Defaults to 15.
 
 =cut
 
- connect_retry_delay => (
+has connect_retry_delay => (
     is => 'ro',
     isa => PositiveInt,
     default => 15,

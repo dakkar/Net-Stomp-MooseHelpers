@@ -5,7 +5,6 @@ use Net::Stomp::MooseHelpers::Types qw(NetStompish
                                        ServerConfigList
                                        Headers
                                   );
-use MooseX::Types::Common::Numeric qw(PositiveInt);
 use MooseX::Types::Moose qw(CodeRef Bool);
 use Try::Tiny;
 use namespace::autoclean;

@@ -21,8 +21,8 @@ use warnings;
 }
 {package TestThing;
  use Moose;
- with 'Net::Stomp::MooseHelpers::CanConnect',
-      'Net::Stomp::MooseHelpers::ReconnectOnFailure';
+ with 'Net::Stomp::MooseHelpers::CanConnect';
+ with 'Net::Stomp::MooseHelpers::ReconnectOnFailure';
 
  has '+connection_builder' => (
      default => sub { sub {
