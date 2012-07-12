@@ -35,7 +35,6 @@ sub reconnect_on_failure {
 
     while (!$done_it) {
         try {
-            warn "trying";
             $self->connect;
 
             if ($wantarray) {

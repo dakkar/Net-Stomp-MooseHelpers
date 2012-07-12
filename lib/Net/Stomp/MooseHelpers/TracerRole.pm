@@ -55,11 +55,11 @@ sub _filename_from_frame {
 sub _save_frame {
     my ($self,$frame,$direction) = @_;
 
-    warn "save_frame\n";
-
     return unless $self->trace;
     return unless $frame;
     $direction||='';
+
+    warn "save_frame\n";
 
     if (!$self->trace_basedir) {
         warn "trace_basedir not set, but tracing requested, ignoring\n";
