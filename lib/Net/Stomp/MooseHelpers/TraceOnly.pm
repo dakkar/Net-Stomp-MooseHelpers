@@ -49,6 +49,8 @@ sub receive_frame {
 sub send_frame {
     my ($self,$frame,@etc) = @_;
 
+    warn "traceonly send_frame\n";
+
     if (my $o=$self->_tracing_object) {
         $o->_save_frame($frame,'send');
     }
