@@ -1,5 +1,7 @@
 {{$NEXT}}
 - new method "clear_destination" on ReadTrace
+- make TraceOnly really always trace
+- accept destinations not starting with "/" in ReadTrace
 
 1.1       2012-07-10 12:10:01 Europe/London
 - added ReconnectOnFailure, and moved some attributes around
