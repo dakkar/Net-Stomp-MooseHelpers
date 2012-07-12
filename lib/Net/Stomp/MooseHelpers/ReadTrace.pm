@@ -61,7 +61,7 @@ sub trace_subdir_for_destination {
     my ($self,$destination) = @_;
 
     return $self->trace_basedir->subdir(
-        Net::Stomp::MooseHelpers::TraceStomp->
+        Net::Stomp::MooseHelpers::TracerRole->
               _dirname_from_destination($destination)
           );
 }

@@ -34,6 +34,7 @@ sub _dirname_from_destination {
     return '' unless defined $destination;
 
     my $ret = $destination;
+    $ret =~ s{^(queue|topic)/}{/$1/};
     $ret =~ s/\W+/_/g;
     return $ret;
 }
