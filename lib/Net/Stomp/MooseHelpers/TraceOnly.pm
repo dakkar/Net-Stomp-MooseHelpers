@@ -15,7 +15,7 @@ with 'Net::Stomp::MooseHelpers::TracerRole';
 
 
 has trace => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Bool',
     default => 1,
 );
