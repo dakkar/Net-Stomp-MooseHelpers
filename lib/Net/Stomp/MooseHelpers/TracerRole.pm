@@ -59,8 +59,6 @@ sub _save_frame {
     return unless $frame;
     $direction||='';
 
-    warn "save_frame\n";
-
     if (!$self->trace_basedir) {
         warn "trace_basedir not set, but tracing requested, ignoring\n";
         return;
