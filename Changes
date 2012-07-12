@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+1.2       2012-07-12 17:46:58 Europe/London
 - new method "clear_destination" on ReadTrace
 - make TraceOnly really always trace
 - accept destinations not starting with "/" in ReadTrace
