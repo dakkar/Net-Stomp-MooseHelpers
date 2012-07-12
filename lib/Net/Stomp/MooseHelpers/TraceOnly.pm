@@ -38,7 +38,11 @@ generate a warning.
 
 =cut
 
-sub trace { 1 }
+has trace => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1,
+);
 
 around '_build_connection' => sub {
     my ($orig,$self,@etc) = @_;
