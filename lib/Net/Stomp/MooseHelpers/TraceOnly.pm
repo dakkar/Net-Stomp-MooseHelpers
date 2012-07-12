@@ -14,7 +14,11 @@ use namespace::autoclean;
 with 'Net::Stomp::MooseHelpers::TracerRole';
 
 
-sub trace { 1 }
+has trace => (
+    is => 'rw',
+    isa => 'Bool',
+    default => 1,
+);
 
 around '_build_connection' => sub {
     my ($orig,$self,@etc) = @_;
