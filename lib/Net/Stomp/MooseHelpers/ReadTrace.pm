@@ -92,6 +92,28 @@ sub read_frame_from_fh {
     });
 }
 
+=method C<trace_subdir_for_destination>
+
+  my $dir = $reader->trace_subdir_for_destination($destination);
+
+Returns a L<Path::Class::Dir> object pointing at the (possibly
+non-existent) directory used to store frames for the given
+destination.
+
+C<< ->trace_subdir_for_destination() >> is the same as C<<
+->trace_basedir >>.
+
+=cut
+
+sub trace_subdir_for_destination {
+    my ($self,$destination) = @_;
+
+    return $self->trace_basedir->subdir(
+        Net::Stomp::MooseHelpers::TraceStomp->
+              _dirname_from_destination($destination)
+          );
+}
+
 =method C<sorted_filenames>
 
   my @names = $reader->sorted_filenames();
@@ -109,10 +131,7 @@ destinations will be returned.
 sub sorted_filenames {
     my ($self,$destination) = @_;
 
-    my $dir = $self->trace_basedir->subdir(
-        Net::Stomp::MooseHelpers::TraceStomp->
-              _dirname_from_destination($destination)
-          );
+    my $dir = $self->trace_subdir_for_destination($destination);
 
     return unless -e $dir;
 
@@ -128,6 +147,29 @@ sub sorted_filenames {
     @files = sort { $a->basename cmp $b->basename } @files;
 
     return @files;
+}
+
+=method C<clear_destination>
+
+  $reader->clear_destination();
+  $reader->clear_destination($destination);
+
+Given a destination (C</queue/something> or similar), removes all
+stored frames for it.
+
+If you don't specify a destination, all frames for all
+destinations will be removed.
+
+=cut
+
+sub clear_destination {
+    my ($self,$destination) = @_;
+
+    my $dir = $self->trace_subdir_for_destination($destination);
+
+    $dir->rmtree;$dir->mkpath;
+
+    return;
 }
 
 =method C<sorted_frames>
