@@ -207,7 +207,10 @@ sub connect {
             %{$self->connect_headers},
             %{$server->{connect_headers} || {}},
         );
-        $self->connection->connect(\%headers);
+        my $response = $self->connection->connect(\%headers);
+        if ($response->command eq 'ERROR') {
+            die $response->headers->{message} // 'some STOMP error';
+        }
         $self->_set_connected;
     } catch {
         Net::Stomp::MooseHelpers::Exceptions::Stomp->throw({
