@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.3';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.3.1';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -86,7 +86,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.3
+version 1.3.1
 
 =head1 DESCRIPTION
 

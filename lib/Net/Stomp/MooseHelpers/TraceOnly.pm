@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.3';
+  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.3.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::DIST = 'Net-Stomp-MooseHelpers';
@@ -31,7 +31,7 @@ around '_build_connection' => sub {
 
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.3';
+  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.3.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::Connection::DIST = 'Net-Stomp-MooseHelpers';
@@ -41,7 +41,15 @@ use Carp;
 
 has _tracing_object => ( is => 'rw' );
 
-sub connect { return 1 }
+sub connect {
+    return Net::Stomp::Frame->new({
+        command => 'CONNECTED',
+        headers => {
+            session => 'ID:foo',
+        },
+        body => '',
+    });
+}
 sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
@@ -87,7 +95,7 @@ Net::Stomp::MooseHelpers::TraceOnly - role to replace the Net::Stomp connection 
 
 =head1 VERSION
 
-version 1.3
+version 1.3.1
 
 =head1 SYNOPSIS
 
