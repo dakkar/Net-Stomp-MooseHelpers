@@ -1,4 +1,5 @@
 {{$NEXT}}
+- lesson learned: never change your versioning scheme!
 
 1.3.1     2012-09-03 11:44:11 Europe/London
 - ::TraceOnly broke ->connect, fixed now
