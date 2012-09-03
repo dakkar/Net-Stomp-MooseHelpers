@@ -1,4 +1,5 @@
 {{$NEXT}}
+- ::TraceOnly broke ->connect, fixed now
 
 1.3       2012-09-03 11:37:23 Europe/London
 - ->connect dies if the brokers returns an ERROR frame

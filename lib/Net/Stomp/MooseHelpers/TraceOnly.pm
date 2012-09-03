@@ -59,7 +59,15 @@ use Carp;
 
 has _tracing_object => ( is => 'rw' );
 
-sub connect { return 1 }
+sub connect {
+    return Net::Stomp::Frame->new({
+        command => 'CONNECTED',
+        headers => {
+            session => 'ID:foo',
+        },
+        body => '',
+    });
+}
 sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
