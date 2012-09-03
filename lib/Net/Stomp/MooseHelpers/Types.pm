@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::Types;
 {
-  $Net::Stomp::MooseHelpers::Types::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::Types::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::Types::DIST = 'Net-Stomp-MooseHelpers';
@@ -64,6 +64,7 @@ subtype Destination, as Str,
     where { m{^/(?:queue|topic)/} };
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -74,7 +75,7 @@ Net::Stomp::MooseHelpers::Types - type definitions for Net::Stomp::MooseHelpers
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 TYPES
 
@@ -136,4 +137,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

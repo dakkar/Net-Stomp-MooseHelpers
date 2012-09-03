@@ -2,14 +2,14 @@
 use strict;
 use warnings;
 {package CallBacks;
+ use Net::Stomp::Frame;
  our @calls;
  sub new {
      my ($class,@args) = @_;
      push @calls,['new',$class,@args];
      bless {},$class;
  }
- for my $m (qw(connect
-               subscribe unsubscribe
+ for my $m (qw(subscribe unsubscribe
                receive_frame ack
                send send_frame)) {
      no strict 'refs';
@@ -17,6 +17,16 @@ use warnings;
          push @calls,[$m,@_];
          return 1;
      };
+ }
+ sub connect {
+     push @calls,['connect',@_];
+     return Net::Stomp::Frame->new({
+         command => 'CONNECTED',
+         headers => {
+             session => 'ID:foo',
+         },
+         body => '',
+     });
  }
 }
 {package TestThing;
@@ -69,10 +79,11 @@ subtest 'simple' => sub {
 subtest 'on failure' => sub {
     no warnings 'redefine','once';
     my $fail_count=0;
+    my $orig = \&CallBacks::connect;
     local *CallBacks::connect = sub {
-        push @CallBacks::calls,['connect',@_];
-        die "planned death" if $fail_count++ < 4;
-        return 1;
+        my $return = $orig->(@_);
+        return $return if $fail_count++ >= 4;
+        die "planned death";
     };
 
     my $obj;
@@ -91,6 +102,7 @@ subtest 'on failure' => sub {
     is(exception {
         local $SIG{__WARN__} = sub {
             push @warns,@_;
+            note "@_" if $ENV{TEST_VERBOSE};
         };
         $obj->reconnect_on_failure('connect');
     },undef,'can build & connect');
@@ -123,6 +135,75 @@ subtest 'on failure' => sub {
                           \bplanned\ death\b
                           .*?
                           at\ t/connect\.t
+                  }xm)) x 4 ],
+               'warns were issued correctly')
+        or note p @warns;
+};
+
+subtest 'reconnect on error' => sub {
+    no warnings 'redefine','once';
+    my $fail_count=0;
+    my $orig = \&CallBacks::connect;
+    local *CallBacks::connect = sub {
+        my $return = $orig->(@_);
+        return $return if $fail_count++ >= 4;
+        return Net::Stomp::Frame->new({
+            command => 'ERROR',
+            headers => {
+                message => 'argh',
+            },
+            body => '',
+        });
+    };
+
+    my $obj;
+    my @servers = (
+        { hostname => 'test-host', port => 9999 },
+    );
+    $obj = TestThing->new({
+        servers => \@servers,
+        connect_retry_delay => 1,
+    });
+
+    @CallBacks::calls=();
+
+    my @warns;
+    is(exception {
+        local $SIG{__WARN__} = sub {
+            push @warns,@_;
+            note "@_" if $ENV{TEST_VERBOSE};
+        };
+        $obj->reconnect_on_failure('connect');
+    },undef,'can build & connect');
+    ok($obj->is_connected,"it knows it's connected");
+
+    my $connect_call = [
+        'connect',
+        ignore(),
+        {},
+    ];
+    cmp_deeply(\@CallBacks::calls,
+               [
+                   map {
+                       [
+                           'new',
+                           'CallBacks',
+                           $_,
+                       ],
+                       $connect_call,
+                   } @servers[0,0,0,0,0]
+               ],
+               'STOMP connect called with expected params')
+        or note p @CallBacks::calls;
+
+    cmp_deeply(\@warns,
+               [ (re(qr{
+                          \A
+                          connection\ problems\ calling\ TestThing=.*?->connect\(\)
+                          .*?
+                          \bargh\b
+                          .*?
+                          at\ .*?CanConnect
                   }xm)) x 4 ],
                'warns were issued correctly')
         or note p @warns;

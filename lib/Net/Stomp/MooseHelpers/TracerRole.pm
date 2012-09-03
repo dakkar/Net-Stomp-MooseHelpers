@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -75,6 +75,7 @@ sub _save_frame {
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -85,7 +86,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 DESCRIPTION
 
@@ -140,4 +141,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

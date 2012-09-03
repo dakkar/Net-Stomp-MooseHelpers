@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanConnect;
 {
-  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::CanConnect::DIST = 'Net-Stomp-MooseHelpers';
@@ -117,7 +117,10 @@ sub connect {
             %{$self->connect_headers},
             %{$server->{connect_headers} || {}},
         );
-        $self->connection->connect(\%headers);
+        my $response = $self->connection->connect(\%headers);
+        if ($response->command eq 'ERROR') {
+            die $response->headers->{message} // 'some STOMP error';
+        }
         $self->_set_connected;
     } catch {
         Net::Stomp::MooseHelpers::Exceptions::Stomp->throw({
@@ -129,6 +132,7 @@ sub connect {
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -139,7 +143,7 @@ Net::Stomp::MooseHelpers::CanConnect - role for classes that connect via Net::St
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 SYNOPSIS
 
@@ -245,4 +249,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

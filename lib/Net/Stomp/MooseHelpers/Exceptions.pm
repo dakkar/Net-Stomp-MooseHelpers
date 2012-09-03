@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::Exceptions;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::Exceptions::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::DIST = 'Net-Stomp-MooseHelpers';
@@ -11,7 +11,7 @@ package Net::Stomp::MooseHelpers::Exceptions;
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stringy;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stringy::DIST = 'Net-Stomp-MooseHelpers';
@@ -26,7 +26,7 @@ requires 'as_string';
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stomp;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stomp::DIST = 'Net-Stomp-MooseHelpers';
@@ -45,6 +45,7 @@ __PACKAGE__->meta->make_immutable;
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -55,7 +56,7 @@ Net::Stomp::MooseHelpers::Exceptions - exception classes for Net::Stomp::MooseHe
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 DESCRIPTION
 
@@ -88,4 +89,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

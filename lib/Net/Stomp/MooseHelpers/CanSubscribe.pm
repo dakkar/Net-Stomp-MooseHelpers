@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanSubscribe;
 {
-  $Net::Stomp::MooseHelpers::CanSubscribe::VERSION = '1.2';
+  $Net::Stomp::MooseHelpers::CanSubscribe::VERSION = '1.3';
 }
 {
   $Net::Stomp::MooseHelpers::CanSubscribe::DIST = 'Net-Stomp-MooseHelpers';
@@ -84,6 +84,7 @@ sub subscribe_single {
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -94,7 +95,7 @@ Net::Stomp::MooseHelpers::CanSubscribe - role for classes that subscribe via Net
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 SYNOPSIS
 
@@ -177,4 +178,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
