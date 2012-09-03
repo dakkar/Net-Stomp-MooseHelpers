@@ -1,15 +1,11 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
-use MooseX::Types::Path::Class;
-use Moose::Util 'apply_all_roles';
-use Time::HiRes ();
-use File::Temp ();
 use Net::Stomp::Frame;
 use namespace::autoclean;
 
@@ -18,7 +14,11 @@ use namespace::autoclean;
 with 'Net::Stomp::MooseHelpers::TracerRole';
 
 
-sub trace { 1 }
+has trace => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1,
+);
 
 around '_build_connection' => sub {
     my ($orig,$self,@etc) = @_;
@@ -31,7 +31,7 @@ around '_build_connection' => sub {
 
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::Connection::DIST = 'Net-Stomp-MooseHelpers';
@@ -41,7 +41,15 @@ use Carp;
 
 has _tracing_object => ( is => 'rw' );
 
-sub connect { return 1 }
+sub connect {
+    return Net::Stomp::Frame->new({
+        command => 'CONNECTED',
+        headers => {
+            session => 'ID:foo',
+        },
+        body => '',
+    });
+}
 sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
@@ -88,7 +96,7 @@ Net::Stomp::MooseHelpers::TraceOnly - role to replace the Net::Stomp connection 
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 SYNOPSIS
 

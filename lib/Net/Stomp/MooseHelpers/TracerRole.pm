@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -34,6 +34,7 @@ sub _dirname_from_destination {
     return '' unless defined $destination;
 
     my $ret = $destination;
+    $ret =~ s{^(queue|topic)/}{/$1/};
     $ret =~ s/\W+/_/g;
     return $ret;
 }
@@ -84,7 +85,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 DESCRIPTION
 

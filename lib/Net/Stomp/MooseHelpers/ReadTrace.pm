@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.1';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.2';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -57,13 +57,22 @@ sub read_frame_from_fh {
 }
 
 
+sub trace_subdir_for_destination {
+    my ($self,$destination) = @_;
+
+    return $self->trace_basedir->subdir(
+        Net::Stomp::MooseHelpers::TracerRole->
+              _dirname_from_destination($destination)
+          );
+}
+
+
 sub sorted_filenames {
     my ($self,$destination) = @_;
 
-    my $dir = $self->trace_basedir->subdir(
-        Net::Stomp::MooseHelpers::TraceStomp->
-              _dirname_from_destination($destination)
-          );
+    my $dir = $self->trace_subdir_for_destination($destination);
+
+    return unless -e $dir;
 
     my @files;
     $dir->recurse(
@@ -77,6 +86,17 @@ sub sorted_filenames {
     @files = sort { $a->basename cmp $b->basename } @files;
 
     return @files;
+}
+
+
+sub clear_destination {
+    my ($self,$destination) = @_;
+
+    my $dir = $self->trace_subdir_for_destination($destination);
+
+    $dir->rmtree;$dir->mkpath;
+
+    return;
 }
 
 
@@ -101,7 +121,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 SYNOPSIS
 
@@ -146,6 +166,17 @@ just after it.
 If the file was not a dumped STOMP frame, this function may still
 return a frame, but the contents are probably going to be useless.
 
+=head2 C<trace_subdir_for_destination>
+
+  my $dir = $reader->trace_subdir_for_destination($destination);
+
+Returns a L<Path::Class::Dir> object pointing at the (possibly
+non-existent) directory used to store frames for the given
+destination.
+
+C<< ->trace_subdir_for_destination() >> is the same as C<<
+->trace_basedir >>.
+
 =head2 C<sorted_filenames>
 
   my @names = $reader->sorted_filenames();
@@ -157,6 +188,17 @@ under L</trace_basedir>, sorted by filename (that is, by timestamp).
 
 If you don't specify a destination, all filenames from all
 destinations will be returned.
+
+=head2 C<clear_destination>
+
+  $reader->clear_destination();
+  $reader->clear_destination($destination);
+
+Given a destination (C</queue/something> or similar), removes all
+stored frames for it.
+
+If you don't specify a destination, all frames for all
+destinations will be removed.
 
 =head2 C<sorted_frames>
 
