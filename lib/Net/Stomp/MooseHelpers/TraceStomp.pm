@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TraceStomp;
 {
-  $Net::Stomp::MooseHelpers::TraceStomp::VERSION = '1.3.1';
+  $Net::Stomp::MooseHelpers::TraceStomp::VERSION = '1.4';
 }
 {
   $Net::Stomp::MooseHelpers::TraceStomp::DIST = 'Net-Stomp-MooseHelpers';
@@ -26,7 +26,7 @@ around '_build_connection' => sub {
 {
 package Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper;
 {
-  $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::VERSION = '1.3.1';
+  $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::VERSION = '1.4';
 }
 {
   $Net::Stomp::MooseHelpers::TraceStomp::ConnWrapper::DIST = 'Net-Stomp-MooseHelpers';
@@ -72,7 +72,7 @@ Net::Stomp::MooseHelpers::TraceStomp - role to wrap the Net::Stomp connection in
 
 =head1 VERSION
 
-version 1.3.1
+version 1.4
 
 =head1 SYNOPSIS
 
