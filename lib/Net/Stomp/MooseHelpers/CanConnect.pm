@@ -209,7 +209,7 @@ sub connect {
         );
         my $response = $self->connection->connect(\%headers);
         if ($response->command eq 'ERROR') {
-            die $response->headers->{message} // 'some STOMP error';
+            die $response->headers->{message} || 'some STOMP error';
         }
         $self->_set_connected;
     } catch {
