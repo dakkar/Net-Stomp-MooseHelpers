@@ -1,3 +1,7 @@
+1.5       2012-10-19 17:00:25 Europe/London
+- avoid a "defined-or", it's not strictly necessary and breaks ancient
+  perls
+
 1.4       2012-09-03 21:00:19 Europe/London
 - lesson learned: never change your versioning scheme!
 

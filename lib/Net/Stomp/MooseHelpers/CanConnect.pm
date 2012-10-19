@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanConnect;
 {
-  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '1.4';
+  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '1.5';
 }
 {
   $Net::Stomp::MooseHelpers::CanConnect::DIST = 'Net-Stomp-MooseHelpers';
@@ -119,7 +119,7 @@ sub connect {
         );
         my $response = $self->connection->connect(\%headers);
         if ($response->command eq 'ERROR') {
-            die $response->headers->{message} // 'some STOMP error';
+            die $response->headers->{message} || 'some STOMP error';
         }
         $self->_set_connected;
     } catch {
@@ -142,7 +142,7 @@ Net::Stomp::MooseHelpers::CanConnect - role for classes that connect via Net::St
 
 =head1 VERSION
 
-version 1.4
+version 1.5
 
 =head1 SYNOPSIS
 
