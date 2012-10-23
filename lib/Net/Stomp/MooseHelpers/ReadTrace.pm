@@ -3,6 +3,7 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Net::Stomp::Frame;
 use Path::Class;
+use Carp;
 require Net::Stomp::MooseHelpers::TraceStomp;
 use namespace::autoclean;
 
@@ -103,10 +104,21 @@ destination.
 C<< ->trace_subdir_for_destination() >> is the same as C<<
 ->trace_basedir >>.
 
+Passing an explicit C<undef> or an empty string will throw an
+exception, see L</sorted_filenames> and L</clear_destination> for the
+reason.
+
 =cut
 
 sub trace_subdir_for_destination {
     my ($self,$destination) = @_;
+
+    if (@_==1) {
+        return $self->trace_basedir;
+    }
+
+    confess "You must pass a defined, non-empty destination"
+        if !length($destination);
 
     return $self->trace_basedir->subdir(
         Net::Stomp::MooseHelpers::TracerRole->
@@ -124,14 +136,21 @@ frame dump filenames found under the corresponding dump directory
 under L</trace_basedir>, sorted by filename (that is, by timestamp).
 
 If you don't specify a destination, all filenames from all
-destinations will be returned.
+destinations will be returned. Passing an explicit C<undef> or an
+empty string will throw an exception, to save you when you try doing
+things like:
+
+  my $dest = get_something_from_config;
+  my @names = $reader->sorted_filenames($dest);
+
+and end up getting way more items than you thought.
 
 =cut
 
 sub sorted_filenames {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
-    my $dir = $self->trace_subdir_for_destination($destination);
+    my $dir = $self->trace_subdir_for_destination(@_);
 
     return unless -e $dir;
 
@@ -157,15 +176,21 @@ sub sorted_filenames {
 Given a destination (C</queue/something> or similar), removes all
 stored frames for it.
 
-If you don't specify a destination, all frames for all
-destinations will be removed.
+If you don't specify a destination, all frames for all destinations
+will be removed. Passing an explicit C<undef> or an empty string will
+throw an exception, to save you when you try doing things like:
+
+  my $dest = get_something_from_config;
+  $reader->clear_destination($dest);
+
+and end up deleting way more than you thought.
 
 =cut
 
 sub clear_destination {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
-    my $dir = $self->trace_subdir_for_destination($destination);
+    my $dir = $self->trace_subdir_for_destination(@_);
 
     $dir->rmtree;$dir->mkpath;
 
@@ -183,11 +208,11 @@ the filenames.
 =cut
 
 sub sorted_frames {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
     return map {
         $self->read_frame_from_filename($_)
-    } $self->sorted_filenames($destination);
+    } $self->sorted_filenames(@_);
 }
 
 1;
