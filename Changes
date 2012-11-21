@@ -1,4 +1,7 @@
 {{$NEXT}}
+- ReadTrace::clear_destination no longer removes the trace directory,
+  it just empties it; this makes looking for files via
+  File::ChangeNotify much simpler
 
 1.6       2012-10-24 15:28:25 Europe/London
 - die if undef or '' is passed as a destination to ReadTrace's methods

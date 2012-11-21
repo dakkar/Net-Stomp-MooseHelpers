@@ -192,7 +192,7 @@ sub clear_destination {
 
     my $dir = $self->trace_subdir_for_destination(@_);
 
-    $dir->rmtree;$dir->mkpath;
+    $dir->rmtree({keep_root=>1});$dir->mkpath;
 
     return;
 }
