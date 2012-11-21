@@ -64,8 +64,9 @@ L<Net::Stomp::Frame> object parsed from it. If the filehandle contains
 more than one frame, reads the first one and leaves the read position
 just after it.
 
-If the file was not a dumped STOMP frame, this function may still
-return a frame, but the contents are probably going to be useless.
+If the file was not a dumped STOMP frame, this function will probably
+return nothing; if it looked enough like a STOMP frame, you'll get
+back whatever could be parsed.
 
 =cut
 
@@ -83,8 +84,11 @@ sub read_frame_from_fh {
         $headers{$key}=$value;
     }
 
-    local $/="\x00";
+    local $/=undef;
+
     my $body=<$fh>;
+
+    return unless $body =~ s{\x00$}{}; # 0 marks the end of the frame
 
     return Net::Stomp::Frame->new({
         command => $command,

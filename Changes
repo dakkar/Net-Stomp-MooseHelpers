@@ -2,6 +2,8 @@
 - ReadTrace::clear_destination no longer removes the trace directory,
   it just empties it; this makes looking for files via
   File::ChangeNotify much simpler
+- ReadTrace::read_frame_from_filename returns nothing if the file
+  can't be parsed as a STOMP frame
 
 1.6       2012-10-24 15:28:25 Europe/London
 - die if undef or '' is passed as a destination to ReadTrace's methods
