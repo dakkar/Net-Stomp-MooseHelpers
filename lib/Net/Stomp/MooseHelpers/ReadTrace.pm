@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.6';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.7';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -102,7 +102,7 @@ sub clear_destination {
 
     my $dir = $self->trace_subdir_for_destination(@_);
 
-    $dir->rmtree;$dir->mkpath;
+    $dir->rmtree({keep_root=>1});$dir->mkpath;
 
     return;
 }
@@ -130,7 +130,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 1.6
+version 1.7
 
 =head1 SYNOPSIS
 

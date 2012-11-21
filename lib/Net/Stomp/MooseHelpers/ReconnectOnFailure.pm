@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReconnectOnFailure;
 {
-  $Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '1.6';
+  $Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '1.7';
 }
 {
   $Net::Stomp::MooseHelpers::ReconnectOnFailure::DIST = 'Net-Stomp-MooseHelpers';
@@ -81,7 +81,7 @@ Net::Stomp::MooseHelpers::ReconnectOnFailure - provide a reconnect-on-failure wr
 
 =head1 VERSION
 
-version 1.6
+version 1.7
 
 =head1 SYNOPSIS
 
