@@ -1,4 +1,4 @@
-1.8       2013-02-15 16:22:37 Europe/London
+1.8       2013-02-15 16:27:12 Europe/London
 
 1.7       2012-11-21 17:18:29 Europe/London
 - ReadTrace::clear_destination no longer removes the trace directory,
