@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanSubscribe;
 {
-  $Net::Stomp::MooseHelpers::CanSubscribe::VERSION = '1.7';
+  $Net::Stomp::MooseHelpers::CanSubscribe::VERSION = '1.8';
 }
 {
   $Net::Stomp::MooseHelpers::CanSubscribe::DIST = 'Net-Stomp-MooseHelpers';
@@ -95,7 +95,7 @@ Net::Stomp::MooseHelpers::CanSubscribe - role for classes that subscribe via Net
 
 =head1 VERSION
 
-version 1.7
+version 1.8
 
 =head1 SYNOPSIS
 

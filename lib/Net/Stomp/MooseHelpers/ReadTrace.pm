@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.7';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.8';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -37,7 +37,9 @@ sub read_frame_from_fh {
     my ($self,$fh) = @_;
 
     local $/="\x0A";
-    my $command=<$fh>;chomp $command;
+    my $command=<$fh>;
+    return unless $command;
+    chomp $command;
     my %headers;
     while (defined(my $header_line=<$fh>)) {
         chomp $header_line;
@@ -51,6 +53,7 @@ sub read_frame_from_fh {
 
     my $body=<$fh>;
 
+    return unless $body;
     return unless $body =~ s{\x00$}{}; # 0 marks the end of the frame
 
     return Net::Stomp::Frame->new({
@@ -133,7 +136,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 1.7
+version 1.8
 
 =head1 SYNOPSIS
 
