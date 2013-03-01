@@ -1,4 +1,6 @@
-1.8       2013-02-15 16:27:12 Europe/London
+1.8       2013-03-01 15:46:59 Europe/London
+- ReadTrace::read_frame_from_* better detects broken or incomplete
+  frames in files (fixes RT #83320)
 
 1.7       2012-11-21 17:18:29 Europe/London
 - ReadTrace::clear_destination no longer removes the trace directory,
