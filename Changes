@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+1.8       2013-03-01 15:46:59 Europe/London
 - ReadTrace::read_frame_from_* better detects broken or incomplete
   frames in files (fixes RT #83320)
 
