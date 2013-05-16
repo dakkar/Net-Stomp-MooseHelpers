@@ -13,6 +13,7 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Gianni Ceccarelli <gianni.ceccarelli\@net-a-porter.com>",
   "BUILD_REQUIRES" => {
     "Data::Printer" => 0,
+    "File::Find" => 0,
     "Test::Deep" => 0,
     "Test::Fatal" => 0,
     "Test::More" => 0,
