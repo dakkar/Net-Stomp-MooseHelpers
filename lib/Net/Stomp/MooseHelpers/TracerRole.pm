@@ -79,10 +79,10 @@ sub _save_frame {
     binmode $fh;
     syswrite $fh,$frame->as_string;
     try {
-        chmod $self->permissions,$fh;
+        chmod $self->trace_permissions,$fh;
     }
     catch {
-        chmod $self->permissions,$filename;
+        chmod $self->trace_permissions,$filename;
     };
     close $fh;
     return;
