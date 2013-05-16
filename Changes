@@ -1,4 +1,6 @@
 {{$NEXT}}
+- TracerRole now allows you to specify the permissions for the dumped
+  files
 
 1.8       2013-03-01 15:46:59 Europe/London
 - ReadTrace::read_frame_from_* better detects broken or incomplete

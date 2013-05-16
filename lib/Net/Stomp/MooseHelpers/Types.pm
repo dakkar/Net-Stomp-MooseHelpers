@@ -7,6 +7,7 @@ use MooseX::Types -declare =>
            Headers
            SubscriptionConfig SubscriptionConfigList
            Destination
+           Permissions OctalPermissions
    )];
 use MooseX::Types::Moose qw(Str Value Int ArrayRef HashRef);
 use MooseX::Types::Structured qw(Dict Optional Map);
@@ -113,3 +114,20 @@ A string starting with C</queue/> or C</topic/>.
 
 subtype Destination, as Str,
     where { m{^/(?:queue|topic)/} };
+
+=head2 C<Permissions>, C<OctalPermissions>
+
+UNIX-style file-system permissions. C<Permissions> is an integer type,
+suitable to be passed to C<chmod>. C<OctalPermissions> is a string
+type coercible to C<Permissions>, allowing you to specify permissions
+in the usual C<"0644"> form.
+
+=cut
+
+subtype Permissions, as Int,
+    where { $_ == 0 or not /^0/ };
+subtype OctalPermissions, as Str,
+    where { /\A0[0-7]{3,4}\z/ };
+coerce Permissions,
+    from OctalPermissions,
+    via { oct($_) };

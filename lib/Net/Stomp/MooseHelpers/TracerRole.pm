@@ -1,8 +1,10 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 use Moose::Role;
 use MooseX::Types::Path::Class;
+use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
+use Try::Tiny;
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -47,6 +49,22 @@ has trace => (
     is => 'rw',
     isa => 'Bool',
     default => 0,
+);
+
+=attr C<trace_permissions>
+
+The permissions (as in L<perlfunc/chmod>) to set the dumped files
+to. Accepts integers and strings with base-8 representation (see
+L<Net::Stomp::MooseHelpers::Types/Permissions> and
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>).
+
+=cut
+
+has trace_permissions => (
+    is => 'rw',
+    isa => Permissions,
+    default => '0600',
+    coerce => 1,
 );
 
 =method C<_dirname_from_destination>
@@ -103,6 +121,12 @@ sub _save_frame {
     my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
     binmode $fh;
     syswrite $fh,$frame->as_string;
+    try {
+        chmod $self->trace_permissions,$fh;
+    }
+    catch {
+        chmod $self->trace_permissions,$filename;
+    };
     close $fh;
     return;
 }
