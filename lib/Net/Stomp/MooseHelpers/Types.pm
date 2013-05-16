@@ -68,7 +68,7 @@ subtype Destination, as Str,
 subtype Permissions, as Int,
     where { $_ == 0 or not /^0/ };
 subtype OctalPermissions, as Str,
-    where { /\A0[0-7]{3,4}/ };
+    where { /\A0[0-7]{3,4}\z/ };
 coerce Permissions,
     from OctalPermissions,
     via { oct($_) };
@@ -137,7 +137,7 @@ A string starting with C</queue/> or C</topic/>.
 
 =head2 C<Permissions>, C<OctalPermissions>
 
-UNIX-tyle file-system permissions. C<Permissions> is an integer type,
+UNIX-style file-system permissions. C<Permissions> is an integer type,
 suitable to be passed to C<chmod>. C<OctalPermissions> is a string
 type coercible to C<Permissions>, allowing you to specify permissions
 in the usual C<"0644"> form.

@@ -134,8 +134,8 @@ generate a warning.
 
 =head2 C<trace_permissions>
 
-The permissions to set the dumped files to. Accepts integers and
-strings with base-8 representation (see
+The permissions (as in L<perlfunc/chmod>) to set the dumped files
+to. Accepts integers and strings with base-8 representation (see
 L<Net::Stomp::MooseHelpers::Types/Permissions> and
 L<Net::Stomp::MooseHelpers::Types/OctalPermissions>).
 

@@ -14,6 +14,7 @@ ok(!is_OctalPermissions(0),'0 is not OctalPermissions');
 ok(!is_OctalPermissions('0999'),'0999 is not OctalPermissions');
 ok(!is_OctalPermissions('011'),'011 is not OctalPermissions');
 ok(!is_OctalPermissions(1),'1 is not OctalPermissions');
+ok(!is_OctalPermissions('016442'),'016442 is not OctalPermissions');
 
 is(to_Permissions('0644'),420,'coercion works');
 
