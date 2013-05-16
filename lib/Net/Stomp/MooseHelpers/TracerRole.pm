@@ -1,14 +1,16 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.8';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.9';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
 use MooseX::Types::Path::Class;
+use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
+use Try::Tiny;
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -25,6 +27,14 @@ has trace => (
     is => 'rw',
     isa => 'Bool',
     default => 0,
+);
+
+
+has trace_permissions => (
+    is => 'rw',
+    isa => Permissions,
+    default => '0600',
+    coerce => 1,
 );
 
 
@@ -68,6 +78,12 @@ sub _save_frame {
     my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
     binmode $fh;
     syswrite $fh,$frame->as_string;
+    try {
+        chmod $self->permissions,$fh;
+    }
+    catch {
+        chmod $self->permissions,$filename;
+    };
     close $fh;
     return;
 }
@@ -86,7 +102,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.8
+version 1.9
 
 =head1 DESCRIPTION
 
@@ -115,6 +131,13 @@ L</trace>, every frame will generate a warning.
 Boolean attribute to enable or disable tracing / dumping of frames. If
 you enable tracing but don't set L</trace_basedir>, every frame will
 generate a warning.
+
+=head2 C<trace_permissions>
+
+The permissions to set the dumped files to. Accepts integers and
+strings with base-8 representation (see
+L<Net::Stomp::MooseHelpers::Types/Permissions> and
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>).
 
 =head1 METHODS
 

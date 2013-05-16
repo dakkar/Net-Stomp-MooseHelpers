@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::Types;
 {
-  $Net::Stomp::MooseHelpers::Types::VERSION = '1.8';
+  $Net::Stomp::MooseHelpers::Types::VERSION = '1.9';
 }
 {
   $Net::Stomp::MooseHelpers::Types::DIST = 'Net-Stomp-MooseHelpers';
@@ -13,6 +13,7 @@ use MooseX::Types -declare =>
            Headers
            SubscriptionConfig SubscriptionConfigList
            Destination
+           Permissions OctalPermissions
    )];
 use MooseX::Types::Moose qw(Str Value Int ArrayRef HashRef);
 use MooseX::Types::Structured qw(Dict Optional Map);
@@ -63,6 +64,15 @@ coerce SubscriptionConfigList, from SubscriptionConfig, via { [shift] };
 subtype Destination, as Str,
     where { m{^/(?:queue|topic)/} };
 
+
+subtype Permissions, as Int,
+    where { $_ == 0 or not /^0/ };
+subtype OctalPermissions, as Str,
+    where { /\A0[0-7]{3,4}/ };
+coerce Permissions,
+    from OctalPermissions,
+    via { oct($_) };
+
 __END__
 
 =pod
@@ -75,7 +85,7 @@ Net::Stomp::MooseHelpers::Types - type definitions for Net::Stomp::MooseHelpers
 
 =head1 VERSION
 
-version 1.8
+version 1.9
 
 =head1 TYPES
 
@@ -124,6 +134,13 @@ single L</SubscriptionConfig>.
 =head2 C<Destination>
 
 A string starting with C</queue/> or C</topic/>.
+
+=head2 C<Permissions>, C<OctalPermissions>
+
+UNIX-tyle file-system permissions. C<Permissions> is an integer type,
+suitable to be passed to C<chmod>. C<OctalPermissions> is a string
+type coercible to C<Permissions>, allowing you to specify permissions
+in the usual C<"0644"> form.
 
 =head1 AUTHOR
 
