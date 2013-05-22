@@ -1,10 +1,26 @@
 #!perl
 use strict;
 use warnings;
-use File::Temp 'tempdir';
+use Test::More;
+use File::Temp 'tempdir','tempfile';
 use File::Find;
 use Test::Deep;
 use Net::Stomp::MooseHelpers::ReadTrace;
+
+my $has_working_permissions;
+{
+    my ($fh,$fn) = tempfile;
+
+    my $pre_permissions = (stat $fn)[2];
+    my $wanted_permissions = ($pre_permissions & 07777) ^ 0246;
+    chmod $wanted_permissions,$fn;
+    my $post_permissions = (stat $fn)[2];
+
+    if ($pre_permissions != $post_permissions
+            and ($post_permissions & 07777) == $wanted_permissions) {
+        $has_working_permissions = 1;
+    }
+};
 
 my $dir = tempdir(CLEANUP => ( $ENV{TEST_VERBOSE} ? 0 : 1 ));
 
@@ -15,7 +31,8 @@ my $dir = tempdir(CLEANUP => ( $ENV{TEST_VERBOSE} ? 0 : 1 ));
  with 'Net::Stomp::MooseHelpers::TraceOnly';
 
  has '+trace_basedir' => ( default => $dir );
- has '+trace_permissions' => ( default => '0644' );
+ has '+trace_permissions' => ( default => '0664' );
+ has '+trace_directory_permissions' => ( default => '0770' );
 }
 
 package main;
@@ -32,9 +49,22 @@ $obj->connection->send({
 my @files;
 find({
     wanted => sub {
-        return unless -f;
-        is((stat($_))[2]&07777,0644,"correct file permissions for $_");
-        push @files,$_;
+        # we skip checking $dir because it was not created by TracerRole
+        if (-d $_ and $_ ne $dir) {
+            is(
+                (stat($_))[2]&07777,
+                0770&(~umask),
+                "correct directory permissions for $_"
+            ) if $has_working_permissions;
+        }
+        elsif (-f $_) {
+            is(
+                (stat($_))[2]&07777,
+                0664&(~umask),
+                "correct file permissions for $_"
+            ) if $has_working_permissions;
+            push @files,$_;
+        }
     },
     no_chdir => 1,
 },$dir);
