@@ -1,4 +1,4 @@
-1.10      2013-05-23 22:12:40 Europe/London
+1.10      2013-05-23 22:14:55 Europe/London
 - TracerRole now allows you to specify the permissions for the
   directories of dumped files
 - fixed tests under Windows and other systems without POSIX file
