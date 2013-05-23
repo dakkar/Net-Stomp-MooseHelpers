@@ -1,14 +1,16 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.5';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.10';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
 use MooseX::Types::Path::Class;
+use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
+use Try::Tiny;
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -25,6 +27,22 @@ has trace => (
     is => 'rw',
     isa => 'Bool',
     default => 0,
+);
+
+
+has trace_permissions => (
+    is => 'rw',
+    isa => Permissions,
+    default => '0600',
+    coerce => 1,
+);
+
+
+has trace_directory_permissions => (
+    is => 'rw',
+    isa => Permissions,
+    default => '0700',
+    coerce => 1,
 );
 
 
@@ -47,7 +65,7 @@ sub _filename_from_frame {
     my $dir = $self->trace_basedir->subdir(
         $self->_dirname_from_destination($frame->headers->{destination})
     );
-    $dir->mkpath;
+    $dir->mkpath({mode => $self->trace_directory_permissions});
 
     return File::Temp::tempfile("${base}-${direction}-XXXX",
                                 DIR => $dir->stringify);
@@ -68,6 +86,12 @@ sub _save_frame {
     my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
     binmode $fh;
     syswrite $fh,$frame->as_string;
+    try {
+        chmod $self->trace_permissions & (~umask),$fh;
+    }
+    catch {
+        chmod $self->trace_permissions & (~umask),$filename;
+    };
     close $fh;
     return;
 }
@@ -75,6 +99,7 @@ sub _save_frame {
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -85,7 +110,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.5
+version 1.10
 
 =head1 DESCRIPTION
 
@@ -115,6 +140,22 @@ Boolean attribute to enable or disable tracing / dumping of frames. If
 you enable tracing but don't set L</trace_basedir>, every frame will
 generate a warning.
 
+=head2 C<trace_permissions>
+
+The permissions (as in L<perlfunc/chmod>) to set the dumped files
+to. Accepts integers and strings with base-8 representation (see
+L<Net::Stomp::MooseHelpers::Types/Permissions> and
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>). The actual
+permissions applied will also depend on the L<umask>.
+
+=head2 C<trace_directory_permissions>
+
+The permissions (as in L<perlfunc/chmod>) to set the directories for
+dumped files to. Accepts integers and strings with base-8
+representation (see L<Net::Stomp::MooseHelpers::Types/Permissions> and
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>). The actual
+permissions applied will also depend on the L<umask>.
+
 =head1 METHODS
 
 =head2 C<_dirname_from_destination>
@@ -140,4 +181,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

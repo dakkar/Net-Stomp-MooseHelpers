@@ -1,3 +1,27 @@
+1.10      2013-05-23 22:12:40 Europe/London
+- TracerRole now allows you to specify the permissions for the
+  directories of dumped files
+- fixed tests under Windows and other systems without POSIX file
+  permissions
+
+1.9       2013-05-16 17:36:57 Europe/London
+- TracerRole now allows you to specify the permissions for the dumped
+  files
+
+1.8       2013-03-01 15:46:59 Europe/London
+- ReadTrace::read_frame_from_* better detects broken or incomplete
+  frames in files (fixes RT #83320)
+
+1.7       2012-11-21 17:18:29 Europe/London
+- ReadTrace::clear_destination no longer removes the trace directory,
+  it just empties it; this makes looking for files via
+  File::ChangeNotify much simpler
+- ReadTrace::read_frame_from_filename returns nothing if the file
+  can't be parsed as a STOMP frame
+
+1.6       2012-10-24 15:28:25 Europe/London
+- die if undef or '' is passed as a destination to ReadTrace's methods
+
 1.5       2012-10-19 17:00:42 Europe/London
 - avoid a "defined-or", it's not strictly necessary and breaks ancient
   perls

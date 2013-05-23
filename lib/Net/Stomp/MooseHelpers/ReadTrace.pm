@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.5';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '1.10';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -9,6 +9,7 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Net::Stomp::Frame;
 use Path::Class;
+use Carp;
 require Net::Stomp::MooseHelpers::TraceStomp;
 use namespace::autoclean;
 
@@ -36,7 +37,9 @@ sub read_frame_from_fh {
     my ($self,$fh) = @_;
 
     local $/="\x0A";
-    my $command=<$fh>;chomp $command;
+    my $command=<$fh>;
+    return unless $command;
+    chomp $command;
     my %headers;
     while (defined(my $header_line=<$fh>)) {
         chomp $header_line;
@@ -46,8 +49,12 @@ sub read_frame_from_fh {
         $headers{$key}=$value;
     }
 
-    local $/="\x00";
+    local $/=undef;
+
     my $body=<$fh>;
+
+    return unless $body;
+    return unless $body =~ s{\x00$}{}; # 0 marks the end of the frame
 
     return Net::Stomp::Frame->new({
         command => $command,
@@ -60,6 +67,13 @@ sub read_frame_from_fh {
 sub trace_subdir_for_destination {
     my ($self,$destination) = @_;
 
+    if (@_==1) {
+        return $self->trace_basedir;
+    }
+
+    confess "You must pass a defined, non-empty destination"
+        if !length($destination);
+
     return $self->trace_basedir->subdir(
         Net::Stomp::MooseHelpers::TracerRole->
               _dirname_from_destination($destination)
@@ -68,9 +82,9 @@ sub trace_subdir_for_destination {
 
 
 sub sorted_filenames {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
-    my $dir = $self->trace_subdir_for_destination($destination);
+    my $dir = $self->trace_subdir_for_destination(@_);
 
     return unless -e $dir;
 
@@ -90,27 +104,28 @@ sub sorted_filenames {
 
 
 sub clear_destination {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
-    my $dir = $self->trace_subdir_for_destination($destination);
+    my $dir = $self->trace_subdir_for_destination(@_);
 
-    $dir->rmtree;$dir->mkpath;
+    $dir->rmtree({keep_root=>1});$dir->mkpath;
 
     return;
 }
 
 
 sub sorted_frames {
-    my ($self,$destination) = @_;
+    my $self=shift;
 
     return map {
         $self->read_frame_from_filename($_)
-    } $self->sorted_filenames($destination);
+    } $self->sorted_filenames(@_);
 }
 
 1;
 
 __END__
+
 =pod
 
 =encoding utf-8
@@ -121,7 +136,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 1.5
+version 1.10
 
 =head1 SYNOPSIS
 
@@ -163,8 +178,9 @@ L<Net::Stomp::Frame> object parsed from it. If the filehandle contains
 more than one frame, reads the first one and leaves the read position
 just after it.
 
-If the file was not a dumped STOMP frame, this function may still
-return a frame, but the contents are probably going to be useless.
+If the file was not a dumped STOMP frame, this function will probably
+return nothing; if it looked enough like a STOMP frame, you'll get
+back whatever could be parsed.
 
 =head2 C<trace_subdir_for_destination>
 
@@ -177,6 +193,10 @@ destination.
 C<< ->trace_subdir_for_destination() >> is the same as C<<
 ->trace_basedir >>.
 
+Passing an explicit C<undef> or an empty string will throw an
+exception, see L</sorted_filenames> and L</clear_destination> for the
+reason.
+
 =head2 C<sorted_filenames>
 
   my @names = $reader->sorted_filenames();
@@ -187,7 +207,14 @@ frame dump filenames found under the corresponding dump directory
 under L</trace_basedir>, sorted by filename (that is, by timestamp).
 
 If you don't specify a destination, all filenames from all
-destinations will be returned.
+destinations will be returned. Passing an explicit C<undef> or an
+empty string will throw an exception, to save you when you try doing
+things like:
+
+  my $dest = get_something_from_config;
+  my @names = $reader->sorted_filenames($dest);
+
+and end up getting way more items than you thought.
 
 =head2 C<clear_destination>
 
@@ -197,8 +224,14 @@ destinations will be returned.
 Given a destination (C</queue/something> or similar), removes all
 stored frames for it.
 
-If you don't specify a destination, all frames for all
-destinations will be removed.
+If you don't specify a destination, all frames for all destinations
+will be removed. Passing an explicit C<undef> or an empty string will
+throw an exception, to save you when you try doing things like:
+
+  my $dest = get_something_from_config;
+  $reader->clear_destination($dest);
+
+and end up deleting way more than you thought.
 
 =head2 C<sorted_frames>
 
@@ -220,4 +253,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

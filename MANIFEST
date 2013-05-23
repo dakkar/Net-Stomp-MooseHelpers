@@ -15,8 +15,10 @@ lib/Net/Stomp/MooseHelpers/TraceStomp.pm
 lib/Net/Stomp/MooseHelpers/TracerRole.pm
 lib/Net/Stomp/MooseHelpers/Types.pm
 t/connect.t
+t/permissions.t
 t/release-no-tabs.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t
 t/subscribe.t
+t/tracing.t
 weaver.ini
