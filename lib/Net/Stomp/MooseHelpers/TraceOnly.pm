@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TraceOnly;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '1.9';
+  $Net::Stomp::MooseHelpers::TraceOnly::VERSION = '2.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::DIST = 'Net-Stomp-MooseHelpers';
@@ -31,21 +31,24 @@ around '_build_connection' => sub {
 
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;
 {
-  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '1.9';
+  $Net::Stomp::MooseHelpers::TraceOnly::Connection::VERSION = '2.1';
 }
 {
   $Net::Stomp::MooseHelpers::TraceOnly::Connection::DIST = 'Net-Stomp-MooseHelpers';
 }{
 use Moose;
 use Carp;
+require Net::Stomp;
 
 has _tracing_object => ( is => 'rw' );
 
 sub connect {
+    my ($self) = @_;
+    $self->session_id("$self-$$");
     return Net::Stomp::Frame->new({
         command => 'CONNECTED',
         headers => {
-            session => 'ID:foo',
+            session => $self->session_id,
         },
         body => '',
     });
@@ -54,12 +57,31 @@ sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
 
+has _last_frame => (
+    is => 'rw',
+);
+
 sub receive_frame {
+    my ($self) = @_;
+
+    # hack to make send_transactional happy
+    if ($self->_last_frame && $self->_last_frame->headers->{'receipt'}) {
+        return Net::Stomp::Frame->new({
+            command => 'RECEIPT',
+            headers => {
+                'receipt-id' => $self->_last_frame->headers->{'receipt'},
+            },
+            body => '',
+        });
+        $self->_last_frame(undef);
+    }
     croak "This a Net::Stomp::MooseHelpers::TraceOnly::Connection, we don't talk to the network";
 }
 
 sub send_frame {
     my ($self,$frame,@etc) = @_;
+
+    $self->_last_frame($frame);
 
     if (my $o=$self->_tracing_object) {
         $o->_save_frame($frame,'send');
@@ -68,17 +90,20 @@ sub send_frame {
     return;
 };
 
-# this is from Net::Stomp
-sub send {
-    my ($self,$conf) = @_;
+has serial => (
+    isa => 'Int',
+    is => 'rw',
+    default => 0,
+);
+has session_id => (
+    isa => 'Str',
+    is => 'rw',
+);
 
-    my $body = $conf->{body};
-    delete $conf->{body};
-    my $frame = Net::Stomp::Frame->new({
-        command => 'SEND', headers => $conf, body => $body,
-    });
-    $self->send_frame($frame);
-}
+# let's just take the original methods, they'll work
+*send = \&Net::Stomp::send;
+*send_transactional = \&Net::Stomp::send_transactional;
+*_get_next_transaction = \&Net::Stomp::_get_next_transaction;
 
 __PACKAGE__->meta->make_immutable;
 }
@@ -95,7 +120,7 @@ Net::Stomp::MooseHelpers::TraceOnly - role to replace the Net::Stomp connection 
 
 =head1 VERSION
 
-version 1.9
+version 2.1
 
 =head1 SYNOPSIS
 

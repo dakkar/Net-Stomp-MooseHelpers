@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '1.9';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '2.1';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -38,6 +38,14 @@ has trace_permissions => (
 );
 
 
+has trace_directory_permissions => (
+    is => 'rw',
+    isa => Permissions,
+    default => '0700',
+    coerce => 1,
+);
+
+
 sub _dirname_from_destination {
     my ($self,$destination) = @_;
 
@@ -57,7 +65,7 @@ sub _filename_from_frame {
     my $dir = $self->trace_basedir->subdir(
         $self->_dirname_from_destination($frame->headers->{destination})
     );
-    $dir->mkpath;
+    $dir->mkpath({mode => $self->trace_directory_permissions});
 
     return File::Temp::tempfile("${base}-${direction}-XXXX",
                                 DIR => $dir->stringify);
@@ -79,10 +87,10 @@ sub _save_frame {
     binmode $fh;
     syswrite $fh,$frame->as_string;
     try {
-        chmod $self->trace_permissions,$fh;
+        chmod $self->trace_permissions & (~umask),$fh;
     }
     catch {
-        chmod $self->trace_permissions,$filename;
+        chmod $self->trace_permissions & (~umask),$filename;
     };
     close $fh;
     return;
@@ -102,7 +110,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 1.9
+version 2.1
 
 =head1 DESCRIPTION
 
@@ -137,7 +145,16 @@ generate a warning.
 The permissions (as in L<perlfunc/chmod>) to set the dumped files
 to. Accepts integers and strings with base-8 representation (see
 L<Net::Stomp::MooseHelpers::Types/Permissions> and
-L<Net::Stomp::MooseHelpers::Types/OctalPermissions>).
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>). The actual
+permissions applied will also depend on the L<umask>.
+
+=head2 C<trace_directory_permissions>
+
+The permissions (as in L<perlfunc/chmod>) to set the directories for
+dumped files to. Accepts integers and strings with base-8
+representation (see L<Net::Stomp::MooseHelpers::Types/Permissions> and
+L<Net::Stomp::MooseHelpers::Types/OctalPermissions>). The actual
+permissions applied will also depend on the L<umask>.
 
 =head1 METHODS
 
