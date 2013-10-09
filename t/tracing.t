@@ -24,6 +24,32 @@ my $has_working_permissions;
 
 my $dir = tempdir(CLEANUP => ( $ENV{TEST_VERBOSE} ? 0 : 1 ));
 
+sub get_dumped_files {
+    my @files;
+    find({
+        wanted => sub {
+            # we skip checking $dir because it was not created by TracerRole
+            if (-d $_ and $_ ne $dir) {
+                is(
+                    (stat($_))[2]&07777,
+                    0770&(~umask),
+                    "correct directory permissions for $_"
+                ) if $has_working_permissions;
+            }
+            elsif (-f $_) {
+                is(
+                    (stat($_))[2]&07777,
+                    0664&(~umask),
+                    "correct file permissions for $_"
+                ) if $has_working_permissions;
+                push @files,$_;
+            }
+        },
+        no_chdir => 1,
+    },$dir);
+    return @files;
+}
+
 {package TestThing;
  use Moose;
  with 'Net::Stomp::MooseHelpers::CanConnect';
@@ -46,28 +72,8 @@ $obj->connection->send({
     destination => '/topic/test',
     body => 'argh',
 });
-my @files;
-find({
-    wanted => sub {
-        # we skip checking $dir because it was not created by TracerRole
-        if (-d $_ and $_ ne $dir) {
-            is(
-                (stat($_))[2]&07777,
-                0770&(~umask),
-                "correct directory permissions for $_"
-            ) if $has_working_permissions;
-        }
-        elsif (-f $_) {
-            is(
-                (stat($_))[2]&07777,
-                0664&(~umask),
-                "correct file permissions for $_"
-            ) if $has_working_permissions;
-            push @files,$_;
-        }
-    },
-    no_chdir => 1,
-},$dir);
+
+my @files = get_dumped_files;
 is(scalar(@files),1,'only one frame dumped');
 
 my $reader = Net::Stomp::MooseHelpers::ReadTrace->new({
@@ -77,16 +83,54 @@ my $reader = Net::Stomp::MooseHelpers::ReadTrace->new({
 my @frames = $reader->sorted_frames();
 is(scalar(@frames),1,'only one frame read back');
 
-cmp_deeply($frames[0],
-           all(isa('Net::Stomp::Frame'),
-               methods(
-                   command => 'SEND',
-                   headers => {
-                       type => 'foo',
-                       destination => '/topic/test',
-                   },
-                   body => 'argh',
-               )),
+cmp_deeply(\@frames,
+           [
+               all(isa('Net::Stomp::Frame'),
+                   methods(
+                       command => 'SEND',
+                       headers => {
+                           type => 'foo',
+                           destination => '/topic/test',
+                       },
+                       body => 'argh',
+                   )),
+           ],
+           'correct contents');
+
+$reader->clear_destination();
+
+$obj->connection->send_transactional({
+    type => 'foo2',
+    destination => '/topic/test2',
+    body => 'argh2',
+});
+
+@files = get_dumped_files;
+is(scalar(@files),3,'three frames dumped');
+@frames = $reader->sorted_frames();
+is(scalar(@frames),3,'three frames read back');
+
+cmp_deeply(\@frames,
+           [
+               all(isa('Net::Stomp::Frame'),
+                   methods(
+                       command => 'BEGIN',
+                   )),
+               all(isa('Net::Stomp::Frame'),
+                   methods(
+                       command => 'SEND',
+                       headers => {
+                           type => 'foo2',
+                           destination => '/topic/test2',
+                           receipt => ignore(),
+                       },
+                       body => 'argh2',
+                   )),
+               all(isa('Net::Stomp::Frame'),
+                   methods(
+                       command => 'COMMIT',
+                   )),
+           ],
            'correct contents');
 
 done_testing();
