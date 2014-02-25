@@ -59,6 +59,7 @@ sub get_dumped_files {
  has '+trace_basedir' => ( default => $dir );
  has '+trace_permissions' => ( default => '0664' );
  has '+trace_directory_permissions' => ( default => '0770' );
+ has '+trace_types' => ( default => sub { +[] } ); # all of them
 }
 
 package main;
@@ -66,71 +67,107 @@ use Test::More;
 
 my $obj = TestThing->new();
 ok($obj->trace,'tracing is on by default with TraceOnly');
-$obj->connect();
-$obj->connection->send({
-    type => 'foo',
-    destination => '/topic/test',
-    body => 'argh',
-});
-
-my @files = get_dumped_files;
-is(scalar(@files),1,'only one frame dumped');
 
 my $reader = Net::Stomp::MooseHelpers::ReadTrace->new({
     trace_basedir => $dir,
 });
 
-my @frames = $reader->sorted_frames();
-is(scalar(@frames),1,'only one frame read back');
+subtest 'sending' => sub {
+    $obj->connect();
+    $obj->connection->send({
+        type => 'foo',
+        destination => '/topic/test',
+        body => 'argh',
+    });
 
-cmp_deeply(\@frames,
-           [
-               all(isa('Net::Stomp::Frame'),
-                   methods(
-                       command => 'SEND',
-                       headers => {
-                           type => 'foo',
-                           destination => '/topic/test',
-                       },
-                       body => 'argh',
-                   )),
-           ],
-           'correct contents');
+    my @files = get_dumped_files;
+    is(scalar(@files),1,'only one frame dumped');
 
-$reader->clear_destination();
+    my @frames = $reader->sorted_frames();
+    is(scalar(@frames),1,'only one frame read back');
 
-$obj->connection->send_transactional({
-    type => 'foo2',
-    destination => '/topic/test2',
-    body => 'argh2',
-});
+    cmp_deeply(\@frames,
+               [
+                   all(isa('Net::Stomp::Frame'),
+                       methods(
+                           command => 'SEND',
+                           headers => {
+                               type => 'foo',
+                               destination => '/topic/test',
+                           },
+                           body => 'argh',
+                       )),
+               ],
+               'correct contents');
+};
 
-@files = get_dumped_files;
-is(scalar(@files),3,'three frames dumped');
-@frames = $reader->sorted_frames();
-is(scalar(@frames),3,'three frames read back');
+subtest 'sending, transactional' => sub {
+    $reader->clear_destination();
 
-cmp_deeply(\@frames,
-           [
-               all(isa('Net::Stomp::Frame'),
-                   methods(
-                       command => 'BEGIN',
-                   )),
-               all(isa('Net::Stomp::Frame'),
-                   methods(
-                       command => 'SEND',
-                       headers => {
-                           type => 'foo2',
-                           destination => '/topic/test2',
-                           receipt => ignore(),
-                       },
-                       body => 'argh2',
-                   )),
-               all(isa('Net::Stomp::Frame'),
-                   methods(
-                       command => 'COMMIT',
-                   )),
-           ],
-           'correct contents');
+    $obj->connection->send_transactional({
+        type => 'foo2',
+        destination => '/topic/test2',
+        body => 'argh2',
+    });
+
+    my @files = get_dumped_files;
+    is(scalar(@files),3,'three frames dumped');
+    my @frames = $reader->sorted_frames();
+    is(scalar(@frames),3,'three frames read back');
+
+    cmp_deeply(\@frames,
+               [
+                   all(isa('Net::Stomp::Frame'),
+                       methods(
+                           command => 'BEGIN',
+                       )),
+                   all(isa('Net::Stomp::Frame'),
+                       methods(
+                           command => 'SEND',
+                           headers => {
+                               type => 'foo2',
+                               destination => '/topic/test2',
+                               receipt => ignore(),
+                           },
+                           body => 'argh2',
+                       )),
+                   all(isa('Net::Stomp::Frame'),
+                       methods(
+                           command => 'COMMIT',
+                       )),
+               ],
+               'correct contents');
+};
+
+subtest 'sending, transactional, filtered' => sub {
+    $reader->clear_destination();
+    $obj->trace_types(['SEND']);
+
+    $obj->connection->send_transactional({
+        type => 'foo2',
+        destination => '/topic/test2',
+        body => 'argh2',
+    });
+
+    my @files = get_dumped_files;
+    is(scalar(@files),1,'one frames dumped');
+    my @frames = $reader->sorted_frames();
+    is(scalar(@frames),1,'one frames read back');
+
+    cmp_deeply(\@frames,
+               [
+                   all(isa('Net::Stomp::Frame'),
+                       methods(
+                           command => 'SEND',
+                           headers => {
+                               type => 'foo2',
+                               destination => '/topic/test2',
+                               receipt => ignore(),
+                           },
+                           body => 'argh2',
+                       )),
+               ],
+               'correct contents');
+};
 
 done_testing();

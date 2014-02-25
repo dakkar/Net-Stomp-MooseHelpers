@@ -5,6 +5,7 @@ use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
 use Try::Tiny;
+use List::Util 'none';
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -85,6 +86,22 @@ has trace_directory_permissions => (
     coerce => 1,
 );
 
+
+=attr C<trace_types>
+
+Arrayref of frame types to dump (strings, compared
+case-insensitively). Defaults to C<['SEND','MESSAGE']>. If set to an
+empty array, all frame types will be dumped (this was the behaviour is
+previous versions).
+
+=cut
+
+has trace_types => (
+    is => 'rw',
+    isa => 'ArrayRef[Str]',
+    default => sub {+['SEND','MESSAGE']},
+);
+
 =method C<_dirname_from_destination>
 
 Generate a directory name from a frame destination. By default,
@@ -129,6 +146,8 @@ sub _save_frame {
 
     return unless $self->trace;
     return unless $frame;
+    return if $self->trace_types and @{$self->trace_types} and
+        none { lc($frame->command) eq lc($_) } @{$self->trace_types};
     $direction||='';
 
     if (!$self->trace_basedir) {

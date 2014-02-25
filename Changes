@@ -1,4 +1,9 @@
 {{$NEXT}}
+- you can now specify which frame types TracerRole will dump
+
+BREAKING CHANGES:
+- only SEND and MESSAGE frames will be dumped by default, set
+  trace_types to [] to get the previous behaviour
 
 2.1       2013-10-09 11:56:21 Europe/London
 - TraceOnly now emulates send_transactional as well as send
