@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::Exceptions;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::VERSION = '2.1';
+  $Net::Stomp::MooseHelpers::Exceptions::VERSION = '2.2';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::DIST = 'Net-Stomp-MooseHelpers';
@@ -11,7 +11,7 @@ package Net::Stomp::MooseHelpers::Exceptions;
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stringy;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '2.1';
+  $Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '2.2';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stringy::DIST = 'Net-Stomp-MooseHelpers';
@@ -26,7 +26,7 @@ requires 'as_string';
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stomp;
 {
-  $Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '2.1';
+  $Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '2.2';
 }
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stomp::DIST = 'Net-Stomp-MooseHelpers';
@@ -48,7 +48,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -56,7 +56,7 @@ Net::Stomp::MooseHelpers::Exceptions - exception classes for Net::Stomp::MooseHe
 
 =head1 VERSION
 
-version 2.1
+version 2.2
 
 =head1 DESCRIPTION
 

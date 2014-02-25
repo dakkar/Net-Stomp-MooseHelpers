@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '2.1';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '2.2';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -11,6 +11,7 @@ use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
 use Try::Tiny;
+use List::Util 'none';
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -46,6 +47,14 @@ has trace_directory_permissions => (
 );
 
 
+
+has trace_types => (
+    is => 'rw',
+    isa => 'ArrayRef[Str]',
+    default => sub {+['SEND','MESSAGE']},
+);
+
+
 sub _dirname_from_destination {
     my ($self,$destination) = @_;
 
@@ -76,6 +85,8 @@ sub _save_frame {
 
     return unless $self->trace;
     return unless $frame;
+    return if $self->trace_types and @{$self->trace_types} and
+        none { lc($frame->command) eq lc($_) } @{$self->trace_types};
     $direction||='';
 
     if (!$self->trace_basedir) {
@@ -102,7 +113,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -110,7 +121,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 2.1
+version 2.2
 
 =head1 DESCRIPTION
 
@@ -155,6 +166,13 @@ dumped files to. Accepts integers and strings with base-8
 representation (see L<Net::Stomp::MooseHelpers::Types/Permissions> and
 L<Net::Stomp::MooseHelpers::Types/OctalPermissions>). The actual
 permissions applied will also depend on the L<umask>.
+
+=head2 C<trace_types>
+
+Arrayref of frame types to dump (strings, compared
+case-insensitively). Defaults to C<['SEND','MESSAGE']>. If set to an
+empty array, all frame types will be dumped (this was the behaviour is
+previous versions).
 
 =head1 METHODS
 

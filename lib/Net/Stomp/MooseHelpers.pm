@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers;
 {
-  $Net::Stomp::MooseHelpers::VERSION = '2.1';
+  $Net::Stomp::MooseHelpers::VERSION = '2.2';
 }
 {
   $Net::Stomp::MooseHelpers::DIST = 'Net-Stomp-MooseHelpers';
@@ -15,7 +15,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -23,7 +23,7 @@ Net::Stomp::MooseHelpers - set of helper roles and types to deal with Net::Stomp
 
 =head1 VERSION
 
-version 2.1
+version 2.2
 
 =head1 DESCRIPTION
 
