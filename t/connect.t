@@ -51,7 +51,7 @@ subtest 'simple' => sub {
     my $obj;
     is(exception {
         $obj = TestThing->new({
-            servers => [ { hostname => 'test-host', port => 9999 } ],
+            servers => [ { hostname => 'test-host', port => 9999, ssl => 1 } ],
             connect_headers => { foo => 'bar' },
         });
 
@@ -64,7 +64,12 @@ subtest 'simple' => sub {
                    [
                        'new',
                        'CallBacks',
-                       { hostname => 'test-host', port => 9999 },
+                       {
+                           hostname => 'test-host',
+                           port => 9999,
+                           ssl => 1,
+                           ssl_options => {},
+                       },
                    ],
                    [
                        'connect',

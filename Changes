@@ -1,3 +1,7 @@
+2.3       2014-03-04 11:12:56 Europe/London
+ - enable SSL connections, I had not noticed that there was no
+   sensible way to set them up via these helpers
+
 2.2       2014-02-25 15:03:27 Europe/London
  - you can now specify which frame types TracerRole will dump
 

@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::CanConnect;
 {
-  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '2.2';
+  $Net::Stomp::MooseHelpers::CanConnect::VERSION = '2.3';
 }
 {
   $Net::Stomp::MooseHelpers::CanConnect::DIST = 'Net-Stomp-MooseHelpers';
@@ -57,6 +57,10 @@ sub _build_connection {
     return $self->connection_builder->({
         hostname => $server->{hostname},
         port => $server->{port},
+        ( $server->{ssl} ?
+              ( ssl => 1,
+                ssl_options => $server->{ssl_options} || {},
+            ) : () ),
     });
 }
 
@@ -143,7 +147,7 @@ Net::Stomp::MooseHelpers::CanConnect - role for classes that connect via Net::St
 
 =head1 VERSION
 
-version 2.2
+version 2.3
 
 =head1 SYNOPSIS
 
@@ -187,8 +191,9 @@ round-robin fashion.
 =head2 C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder> (passing C<hostname> and C<port>), rotating
-servers via L</next_server>. It's usually a L<Net::Stomp> object.
+L</connection_builder> (passing C<hostname>, C<port>, and SSL flag and
+options), rotating servers via L</next_server>. It's usually a
+L<Net::Stomp> object.
 
 =head2 C<is_connected>
 
