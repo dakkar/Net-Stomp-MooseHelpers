@@ -9,7 +9,7 @@ use MooseX::Types -declare =>
            Destination
            Permissions OctalPermissions
    )];
-use MooseX::Types::Moose qw(Str Value Int ArrayRef HashRef);
+use MooseX::Types::Moose qw(Bool Str Value Int ArrayRef HashRef);
 use MooseX::Types::Structured qw(Dict Optional Map);
 use namespace::autoclean;
 
@@ -48,17 +48,46 @@ subtype PortNumber, as Int,
 
 =head2 C<ServerConfig>
 
-A hashref having a C<hostname> key (with value matching L</Hostname>),
-a C<port> key (value matching L</PortNumber>), and optionally a
-C<connect_headers> key (with a hashref value) and a
-C<subscribe_headers> key (with a hashref value). See
-L<Net::Stomp::MooseHelpers::CanConnect/connect>.
+A hashref with these keys:
+
+=over 4
+
+=item C<hostname>
+
+with value matching L</Hostname>
+
+=item C<port>
+
+value matching L</PortNumber>
+
+=item C<connect_headers>
+
+optional, a hashref value (credentials go here, as C<login> / C<passcode>)
+
+=item C<subscribe_headers>
+
+optional, a hashref value
+
+=item C<ssl>
+
+optional boolean, defaults to false
+
+=item C<ssl_options>
+
+optional, a hashref value, passed to L<IO::Socket::SSL> from inside
+L<Net::Stomp>
+
+=back
+
+See L<Net::Stomp::MooseHelpers::CanConnect/connect>.
 
 =cut
 
 subtype ServerConfig, as Dict[
     hostname => Hostname,
     port => PortNumber,
+    ssl => Optional[Bool],
+    ssl_options => Optional[HashRef],
     connect_headers => Optional[HashRef],
     subscribe_headers => Optional[HashRef],
 ];

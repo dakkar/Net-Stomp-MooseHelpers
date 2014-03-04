@@ -51,8 +51,9 @@ round-robin fashion.
 =attr C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder> (passing C<hostname> and C<port>), rotating
-servers via L</next_server>. It's usually a L<Net::Stomp> object.
+L</connection_builder> (passing C<hostname>, C<port>, and SSL flag and
+options), rotating servers via L</next_server>. It's usually a
+L<Net::Stomp> object.
 
 =cut
 
@@ -109,6 +110,10 @@ sub _build_connection {
     return $self->connection_builder->({
         hostname => $server->{hostname},
         port => $server->{port},
+        ( $server->{ssl} ?
+              ( ssl => 1,
+                ssl_options => $server->{ssl_options} || {},
+            ) : () ),
     });
 }
 
