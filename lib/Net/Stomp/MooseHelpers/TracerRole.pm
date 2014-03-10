@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::TracerRole;
 {
-  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '2.3';
+  $Net::Stomp::MooseHelpers::TracerRole::VERSION = '2.4';
 }
 {
   $Net::Stomp::MooseHelpers::TracerRole::DIST = 'Net-Stomp-MooseHelpers';
@@ -11,7 +11,7 @@ use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
 use Try::Tiny;
-use List::Util 'none';
+use List::Util 1.33 'none';
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
@@ -121,7 +121,7 @@ Net::Stomp::MooseHelpers::TracerRole - role to dump Net::Stomp frames to disk
 
 =head1 VERSION
 
-version 2.3
+version 2.4
 
 =head1 DESCRIPTION
 

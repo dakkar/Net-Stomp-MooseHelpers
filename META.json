@@ -37,7 +37,7 @@
          "requires" : {
             "Carp" : "0",
             "File::Temp" : "0",
-            "List::Util" : "0",
+            "List::Util" : "1.33",
             "Moose" : "0",
             "Moose::Role" : "0",
             "Moose::Util" : "0",
@@ -70,6 +70,6 @@
       }
    },
    "release_status" : "stable",
-   "version" : "2.3"
+   "version" : "2.4"
 }
 

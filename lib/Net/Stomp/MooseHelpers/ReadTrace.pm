@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
 {
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '2.3';
+  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '2.4';
 }
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
@@ -136,7 +136,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 2.3
+version 2.4
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Net::Stomp::MooseHelpers::Types;
 {
-  $Net::Stomp::MooseHelpers::Types::VERSION = '2.3';
+  $Net::Stomp::MooseHelpers::Types::VERSION = '2.4';
 }
 {
   $Net::Stomp::MooseHelpers::Types::DIST = 'Net-Stomp-MooseHelpers';
@@ -87,7 +87,7 @@ Net::Stomp::MooseHelpers::Types - type definitions for Net::Stomp::MooseHelpers
 
 =head1 VERSION
 
-version 2.3
+version 2.4
 
 =head1 TYPES
 

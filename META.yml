@@ -25,7 +25,7 @@ no_index:
 requires:
   Carp: 0
   File::Temp: 0
-  List::Util: 0
+  List::Util: 1.33
   Moose: 0
   Moose::Role: 0
   Moose::Util: 0
@@ -43,4 +43,4 @@ requires:
   Try::Tiny: 0
   namespace::autoclean: 0
   overload: 0
-version: 2.3
+version: 2.4

@@ -22,7 +22,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Carp" => 0,
     "File::Temp" => 0,
-    "List::Util" => 0,
+    "List::Util" => "1.33",
     "Moose" => 0,
     "Moose::Role" => 0,
     "Moose::Util" => 0,
@@ -50,7 +50,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "2.3",
+  "VERSION" => "2.4",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -62,7 +62,7 @@ my %FallbackPrereqs = (
   "Data::Printer" => 0,
   "File::Find" => 0,
   "File::Temp" => 0,
-  "List::Util" => 0,
+  "List::Util" => "1.33",
   "Moose" => 0,
   "Moose::Role" => 0,
   "Moose::Util" => 0,
