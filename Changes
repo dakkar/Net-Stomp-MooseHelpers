@@ -1,4 +1,7 @@
 {{$NEXT}}
+ - RT #93698 fix dependency on newer List::Util for 'none' (thanks to
+   Andreas J. König who did the work of figuring out the version
+   before I even started looking into the problem)
 
 2.3       2014-03-04 11:12:56 Europe/London
  - enable SSL connections, I had not noticed that there was no

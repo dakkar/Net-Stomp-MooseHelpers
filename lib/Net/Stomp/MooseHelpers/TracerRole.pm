@@ -5,7 +5,7 @@ use Net::Stomp::MooseHelpers::Types qw(Permissions OctalPermissions);
 use Time::HiRes ();
 use File::Temp ();
 use Try::Tiny;
-use List::Util 'none';
+use List::Util 1.33 'none';
 use namespace::autoclean;
 
 # ABSTRACT: role to dump Net::Stomp frames to disk
