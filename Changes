@@ -1,4 +1,4 @@
-2.4       2014-03-10 10:30:23 Europe/London
+2.4       2014-03-10 10:33:41 Europe/London
  - RT #93698 fix dependency on newer List::Util for 'none' (thanks to
    Andreas J. König who did the work of figuring out the version
    before I even started looking into the problem)
