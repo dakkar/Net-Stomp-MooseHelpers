@@ -1,3 +1,9 @@
+2.5       2014-06-25 14:31:48+01:00 Europe/London
+ - fix race-condition on tracing: write to a temporary file, then
+   rename; this fixes some hard-to-reproduce problems when used in
+   conjunction with Plack::Handler::Stomp::NoNetwork, which would read
+   a new frame from disk before we've finished writing it
+
 2.4       2014-03-10 10:33:41 Europe/London
  - RT #93698 fix dependency on newer List::Util for 'none' (thanks to
    Andreas J. König who did the work of figuring out the version

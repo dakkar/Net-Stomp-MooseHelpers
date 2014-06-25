@@ -1,7 +1,5 @@
 package Net::Stomp::MooseHelpers::ReadTrace;
-{
-  $Net::Stomp::MooseHelpers::ReadTrace::VERSION = '2.4';
-}
+$Net::Stomp::MooseHelpers::ReadTrace::VERSION = '2.5';
 {
   $Net::Stomp::MooseHelpers::ReadTrace::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -136,7 +134,7 @@ Net::Stomp::MooseHelpers::ReadTrace - class to read the output of L<Net::Stomp::
 
 =head1 VERSION
 
-version 2.4
+version 2.5
 
 =head1 SYNOPSIS
 
@@ -247,7 +245,7 @@ Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Net-a-porter.com.
+This software is copyright (c) 2014 by Net-a-porter.com.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

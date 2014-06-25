@@ -4,7 +4,7 @@
       "Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830",
+   "generated_by" : "Dist::Zilla version 5.019, CPAN::Meta::Converter version 2.140640",
    "license" : [
       "perl_5"
    ],
@@ -70,6 +70,13 @@
       }
    },
    "release_status" : "stable",
-   "version" : "2.4"
+   "resources" : {
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/dakkar/Net-Stomp-MooseHelpers.git",
+         "web" : "https://github.com/dakkar/Net-Stomp-MooseHelpers"
+      }
+   },
+   "version" : "2.5"
 }
 

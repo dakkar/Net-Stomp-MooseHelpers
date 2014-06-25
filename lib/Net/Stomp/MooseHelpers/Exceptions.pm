@@ -1,7 +1,5 @@
 package Net::Stomp::MooseHelpers::Exceptions;
-{
-  $Net::Stomp::MooseHelpers::Exceptions::VERSION = '2.4';
-}
+$Net::Stomp::MooseHelpers::Exceptions::VERSION = '2.5';
 {
   $Net::Stomp::MooseHelpers::Exceptions::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -10,9 +8,7 @@ package Net::Stomp::MooseHelpers::Exceptions;
 
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stringy;
-{
-  $Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '2.4';
-}
+$Net::Stomp::MooseHelpers::Exceptions::Stringy::VERSION = '2.5';
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stringy::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -25,9 +21,7 @@ requires 'as_string';
 }
 {
 package Net::Stomp::MooseHelpers::Exceptions::Stomp;
-{
-  $Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '2.4';
-}
+$Net::Stomp::MooseHelpers::Exceptions::Stomp::VERSION = '2.5';
 {
   $Net::Stomp::MooseHelpers::Exceptions::Stomp::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -56,7 +50,7 @@ Net::Stomp::MooseHelpers::Exceptions - exception classes for Net::Stomp::MooseHe
 
 =head1 VERSION
 
-version 2.4
+version 2.5
 
 =head1 DESCRIPTION
 
@@ -83,7 +77,7 @@ Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Net-a-porter.com.
+This software is copyright (c) 2014 by Net-a-porter.com.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

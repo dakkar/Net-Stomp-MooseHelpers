@@ -1,7 +1,5 @@
 package Net::Stomp::MooseHelpers::ReconnectOnFailure;
-{
-  $Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '2.4';
-}
+$Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '2.5';
 {
   $Net::Stomp::MooseHelpers::ReconnectOnFailure::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -81,7 +79,7 @@ Net::Stomp::MooseHelpers::ReconnectOnFailure - provide a reconnect-on-failure wr
 
 =head1 VERSION
 
-version 2.4
+version 2.5
 
 =head1 SYNOPSIS
 
@@ -134,7 +132,7 @@ Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Net-a-porter.com.
+This software is copyright (c) 2014 by Net-a-porter.com.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
