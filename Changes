@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+2.5       2014-06-25 14:31:48+01:00 Europe/London
  - fix race-condition on tracing: write to a temporary file, then
    rename; this fixes some hard-to-reproduce problems when used in
    conjunction with Plack::Handler::Stomp::NoNetwork, which would read
