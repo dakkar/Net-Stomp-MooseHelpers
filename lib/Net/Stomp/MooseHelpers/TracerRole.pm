@@ -141,6 +141,17 @@ sub _filename_from_frame {
                                 DIR => $dir->stringify);
 }
 
+sub _temp_trace_file {
+    my ($self,$frame,$direction) = @_;
+
+    my $base = sprintf '%0.5f',Time::HiRes::time();
+    my $dir = $self->trace_basedir->subdir('tmp');
+    $dir->mkpath({mode => $self->trace_directory_permissions});
+
+    return File::Temp::tempfile("${base}-temp-XXXX",
+                                DIR => $dir->stringify);
+}
+
 sub _save_frame {
     my ($self,$frame,$direction) = @_;
 
@@ -155,16 +166,21 @@ sub _save_frame {
         return;
     }
 
-    my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
-    binmode $fh;
-    syswrite $fh,$frame->as_string;
+    my ($tmp_fh,$tmp_filename) = $self->_temp_trace_file;
+    binmode $tmp_fh;
+    syswrite $tmp_fh,$frame->as_string;
     try {
-        chmod $self->trace_permissions & (~umask),$fh;
+        chmod $self->trace_permissions & (~umask),$tmp_fh;
     }
     catch {
-        chmod $self->trace_permissions & (~umask),$filename;
+        chmod $self->trace_permissions & (~umask),$tmp_filename;
     };
+    close $tmp_fh;
+
+    my ($fh,$filename) = $self->_filename_from_frame($frame,$direction);
     close $fh;
+    rename $tmp_filename,$filename;
+
     return;
 }
 
