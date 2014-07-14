@@ -5,7 +5,7 @@ use Net::Stomp::MooseHelpers::Types qw(NetStompish
                                        ServerConfigList
                                        Headers
                                   );
-use MooseX::Types::Moose qw(CodeRef Bool);
+use MooseX::Types::Moose qw(CodeRef Bool HashRef);
 use Try::Tiny;
 use namespace::autoclean;
 
@@ -51,9 +51,9 @@ round-robin fashion.
 =attr C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder> (passing C<hostname>, C<port>, and SSL flag and
-options), rotating servers via L</next_server>. It's usually a
-L<Net::Stomp> object.
+L</connection_builder> (passing L</extra_connection_builder_args>,
+C<hostname>, C<port>, and SSL flag and options), rotating servers via
+L</next_server>. It's usually a L<Net::Stomp> object.
 
 =cut
 
@@ -102,12 +102,26 @@ has connection_builder => (
     },
 );
 
+=attr C<extra_connection_builder_args>
+
+Optional hashref to pass to the L</connection_builder> when building
+the L</connection>.
+
+=cut
+
+has extra_connection_builder_args => (
+    is => 'ro',
+    isa => HashRef,
+    default => sub { {} },
+);
+
 sub _build_connection {
     my ($self) = @_;
 
     my $server = $self->next_server;
 
     return $self->connection_builder->({
+        %{$self->extra_connection_builder_args},
         hostname => $server->{hostname},
         port => $server->{port},
         ( $server->{ssl} ?

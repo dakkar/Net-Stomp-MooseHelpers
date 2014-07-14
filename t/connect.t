@@ -53,6 +53,7 @@ subtest 'simple' => sub {
         $obj = TestThing->new({
             servers => [ { hostname => 'test-host', port => 9999, ssl => 1 } ],
             connect_headers => { foo => 'bar' },
+            extra_connection_builder_args => { more => 'args' },
         });
 
         $obj->connect;
@@ -69,6 +70,7 @@ subtest 'simple' => sub {
                            port => 9999,
                            ssl => 1,
                            ssl_options => {},
+                           more => 'args',
                        },
                    ],
                    [
