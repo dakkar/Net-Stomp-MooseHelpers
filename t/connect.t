@@ -11,7 +11,7 @@ use warnings;
  }
  for my $m (qw(subscribe unsubscribe
                receive_frame ack
-               send send_frame)) {
+               send send_frame current_host)) {
      no strict 'refs';
      *$m=sub {
          push @calls,[$m,@_];
@@ -33,6 +33,10 @@ use warnings;
  use Moose;
  with 'Net::Stomp::MooseHelpers::CanConnect';
  with 'Net::Stomp::MooseHelpers::ReconnectOnFailure';
+
+ has '+connect_retry_delay' => (
+     default => 0.1,
+ );
 
  has '+connection_builder' => (
      default => sub { sub {
@@ -66,12 +70,17 @@ subtest 'simple' => sub {
                        'new',
                        'CallBacks',
                        {
-                           hostname => 'test-host',
-                           port => 9999,
-                           ssl => 1,
-                           ssl_options => {},
+                           hosts => [{
+                               hostname => 'test-host',
+                               port => 9999,
+                               ssl => 1,
+                           }],
                            more => 'args',
                        },
+                   ],
+                   [
+                       'current_host',
+                       ignore(),
                    ],
                    [
                        'connect',
@@ -100,7 +109,6 @@ subtest 'on failure' => sub {
     );
     $obj = TestThing->new({
         servers => \@servers,
-        connect_retry_delay => 1,
     });
 
     @CallBacks::calls=();
@@ -115,21 +123,27 @@ subtest 'on failure' => sub {
     },undef,'can build & connect');
     ok($obj->is_connected,"it knows it's connected");
 
-    my $connect_call = [
-        'connect',
-        ignore(),
-        {},
-    ];
+    my @connect_call = (
+        [
+            'current_host',
+            ignore(),
+        ],
+        [
+            'connect',
+            ignore(),
+            {},
+        ]
+    );
     cmp_deeply(\@CallBacks::calls,
                [
-                   map {
+                   (
                        [
                            'new',
                            'CallBacks',
-                           $_,
+                           { hosts => \@servers },
                        ],
-                       $connect_call,
-                   } @servers[0,1,0,1,0]
+                       @connect_call,
+                   ) x 5,
                ],
                'STOMP connect called with expected params')
         or note p @CallBacks::calls;
@@ -169,7 +183,6 @@ subtest 'reconnect on error' => sub {
     );
     $obj = TestThing->new({
         servers => \@servers,
-        connect_retry_delay => 1,
     });
 
     @CallBacks::calls=();
@@ -184,21 +197,27 @@ subtest 'reconnect on error' => sub {
     },undef,'can build & connect');
     ok($obj->is_connected,"it knows it's connected");
 
-    my $connect_call = [
-        'connect',
-        ignore(),
-        {},
-    ];
+    my @connect_call = (
+        [
+            'current_host',
+            ignore(),
+        ],
+        [
+            'connect',
+            ignore(),
+            {},
+        ],
+    );
     cmp_deeply(\@CallBacks::calls,
                [
-                   map {
+                   (
                        [
                            'new',
                            'CallBacks',
-                           $_,
+                           { hosts => \@servers },
                        ],
-                       $connect_call,
-                   } @servers[0,0,0,0,0]
+                       @connect_call,
+                   ) x 5,
                ],
                'STOMP connect called with expected params')
         or note p @CallBacks::calls;

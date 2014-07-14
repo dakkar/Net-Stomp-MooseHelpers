@@ -1,4 +1,6 @@
 {{$NEXT}}
+ - require Net::Stomp 0.49
+ - move failover handling to Net::Stomp, now that we know it works
 
 2.5       2014-06-25 14:31:48+01:00 Europe/London
  - fix race-condition on tracing: write to a temporary file, then

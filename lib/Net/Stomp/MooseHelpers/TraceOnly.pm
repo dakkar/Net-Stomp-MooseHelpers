@@ -74,6 +74,7 @@ sub connect {
 sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
+sub current_host { return 0 }
 
 has _last_frame => (
     is => 'rw',

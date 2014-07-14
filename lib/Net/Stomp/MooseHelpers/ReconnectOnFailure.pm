@@ -1,7 +1,7 @@
 package Net::Stomp::MooseHelpers::ReconnectOnFailure;
 use Moose::Role;
 use Net::Stomp::MooseHelpers::Exceptions;
-use MooseX::Types::Common::Numeric qw(PositiveInt);
+use MooseX::Types::Common::Numeric qw(PositiveNum);
 use Carp;
 use Try::Tiny;
 use Time::HiRes 'sleep';
@@ -40,7 +40,7 @@ How many seconds to wait between connection attempts. Defaults to 15.
 
 has connect_retry_delay => (
     is => 'ro',
-    isa => PositiveInt,
+    isa => PositiveNum,
     default => 15,
 );
 

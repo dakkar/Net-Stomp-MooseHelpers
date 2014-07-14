@@ -27,7 +27,7 @@ C<receive_frame>, C<ack>, C<send>, C<send_frame>.
 duck_type NetStompish, [qw(connect
                            subscribe unsubscribe
                            receive_frame ack
-                           send send_frame)];
+                           send send_frame current_host)];
 
 =head2 C<Hostname>
 

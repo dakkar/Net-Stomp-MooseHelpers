@@ -33,7 +33,7 @@ use namespace::autoclean;
       if ($exception) {
         if (blessed $exception &&
             $exception->isa('Net::Stomp::MooseHelpers::Exceptions::Stomp')) {
-          warn "connection died, trying next server\n";
+          warn "connection died, trying again\n";
           $self->clear_connection;
           next SERVER_LOOP;
         }
@@ -45,15 +45,15 @@ use namespace::autoclean;
 =head1 DESCRIPTION
 
 This role provides your class with a flexible way to connect to a
-STOMP server. It supports connecting to one of many server in a
-round-robin fashion.
+STOMP server. It delegates connecting to one of many server in a
+round-robin fashion to the underlying L<Net::Stomp>-like library.
 
 =attr C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder> (passing L</extra_connection_builder_args>,
-C<hostname>, C<port>, and SSL flag and options), rotating servers via
-L</next_server>. It's usually a L<Net::Stomp> object.
+L</connection_builder> (passing L</extra_connection_builder_args>, all
+L</servers> as C<hosts>, and SSL flag and options). It's usually a
+L<Net::Stomp> object.
 
 =cut
 
@@ -118,16 +118,9 @@ has extra_connection_builder_args => (
 sub _build_connection {
     my ($self) = @_;
 
-    my $server = $self->next_server;
-
     return $self->connection_builder->({
         %{$self->extra_connection_builder_args},
-        hostname => $server->{hostname},
-        port => $server->{port},
-        ( $server->{ssl} ?
-              ( ssl => 1,
-                ssl_options => $server->{ssl_options} || {},
-            ) : () ),
+        hosts => $self->servers,
     });
 }
 
@@ -156,32 +149,17 @@ sub _default_servers {
     [ { hostname => 'localhost', port => 61613 } ]
 };
 
-=method C<next_server>
-
-Rotates L</servers>, returning the element that was just moved from
-the front to the back.
-
-=cut
-
-sub next_server {
-    my ($self) = @_;
-
-    my $ret = $self->_shift_servers;
-    $self->_push_servers($ret);
-    return $ret;
-}
-
 =method C<current_server>
 
-Returns whatever the last call to L</next_server> returned, i.e. the
-last element of L</servers>.
+Returns the element of L</servers> that the L</connection> says it's
+connected to.
 
 =cut
 
 sub current_server {
     my ($self) = @_;
 
-    return $self->servers->[-1];
+    return $self->servers->[$self->connection->current_host];
 }
 
 =attr C<connect_headers>
