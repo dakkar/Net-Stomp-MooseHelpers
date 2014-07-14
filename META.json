@@ -47,7 +47,7 @@
             "MooseX::Types::Moose" : "0",
             "MooseX::Types::Path::Class" : "0",
             "MooseX::Types::Structured" : "0",
-            "Net::Stomp" : "0",
+            "Net::Stomp" : "0.47",
             "Net::Stomp::Frame" : "0",
             "Path::Class" : "0",
             "Throwable" : "0",
@@ -77,6 +77,6 @@
          "web" : "https://github.com/dakkar/Net-Stomp-MooseHelpers"
       }
    },
-   "version" : "2.5"
+   "version" : "2.6"
 }
 

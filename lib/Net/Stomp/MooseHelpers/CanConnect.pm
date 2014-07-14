@@ -1,5 +1,5 @@
 package Net::Stomp::MooseHelpers::CanConnect;
-$Net::Stomp::MooseHelpers::CanConnect::VERSION = '2.5';
+$Net::Stomp::MooseHelpers::CanConnect::VERSION = '2.6';
 {
   $Net::Stomp::MooseHelpers::CanConnect::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -9,7 +9,7 @@ use Net::Stomp::MooseHelpers::Types qw(NetStompish
                                        ServerConfigList
                                        Headers
                                   );
-use MooseX::Types::Moose qw(CodeRef Bool);
+use MooseX::Types::Moose qw(CodeRef Bool HashRef);
 use Try::Tiny;
 use namespace::autoclean;
 
@@ -47,18 +47,19 @@ has connection_builder => (
     },
 );
 
+
+has extra_connection_builder_args => (
+    is => 'ro',
+    isa => HashRef,
+    default => sub { {} },
+);
+
 sub _build_connection {
     my ($self) = @_;
 
-    my $server = $self->next_server;
-
     return $self->connection_builder->({
-        hostname => $server->{hostname},
-        port => $server->{port},
-        ( $server->{ssl} ?
-              ( ssl => 1,
-                ssl_options => $server->{ssl_options} || {},
-            ) : () ),
+        %{$self->extra_connection_builder_args},
+        hosts => $self->servers,
     });
 }
 
@@ -80,19 +81,10 @@ sub _default_servers {
 };
 
 
-sub next_server {
-    my ($self) = @_;
-
-    my $ret = $self->_shift_servers;
-    $self->_push_servers($ret);
-    return $ret;
-}
-
-
 sub current_server {
     my ($self) = @_;
 
-    return $self->servers->[-1];
+    return $self->servers->[$self->connection->current_host];
 }
 
 
@@ -145,7 +137,7 @@ Net::Stomp::MooseHelpers::CanConnect - role for classes that connect via Net::St
 
 =head1 VERSION
 
-version 2.5
+version 2.6
 
 =head1 SYNOPSIS
 
@@ -169,7 +161,7 @@ version 2.5
       if ($exception) {
         if (blessed $exception &&
             $exception->isa('Net::Stomp::MooseHelpers::Exceptions::Stomp')) {
-          warn "connection died, trying next server\n";
+          warn "connection died, trying again\n";
           $self->clear_connection;
           next SERVER_LOOP;
         }
@@ -181,16 +173,16 @@ version 2.5
 =head1 DESCRIPTION
 
 This role provides your class with a flexible way to connect to a
-STOMP server. It supports connecting to one of many server in a
-round-robin fashion.
+STOMP server. It delegates connecting to one of many server in a
+round-robin fashion to the underlying L<Net::Stomp>-like library.
 
 =head1 ATTRIBUTES
 
 =head2 C<connection>
 
 The connection to the STOMP server. It's built using the
-L</connection_builder> (passing C<hostname>, C<port>, and SSL flag and
-options), rotating servers via L</next_server>. It's usually a
+L</connection_builder> (passing L</extra_connection_builder_args>, all
+L</servers> as C<hosts>, and SSL flag and options). It's usually a
 L<Net::Stomp> object.
 
 =head2 C<is_connected>
@@ -204,6 +196,11 @@ when reconnecting; you should not care much about it.
 Coderef that, given a hashref of options, returns a connection. The
 default builder just passes the hashref to the constructor of
 L<Net::Stomp>.
+
+=head2 C<extra_connection_builder_args>
+
+Optional hashref to pass to the L</connection_builder> when building
+the L</connection>.
 
 =head2 C<servers>
 
@@ -220,15 +217,10 @@ slot in each element of L</servers>. Defaults to the empty hashref.
 
 =head1 METHODS
 
-=head2 C<next_server>
-
-Rotates L</servers>, returning the element that was just moved from
-the front to the back.
-
 =head2 C<current_server>
 
-Returns whatever the last call to L</next_server> returned, i.e. the
-last element of L</servers>.
+Returns the element of L</servers> that the L</connection> says it's
+connected to.
 
 =head2 C<connect>
 

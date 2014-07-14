@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
     "MooseX::Types::Moose" => 0,
     "MooseX::Types::Path::Class" => 0,
     "MooseX::Types::Structured" => 0,
-    "Net::Stomp" => 0,
+    "Net::Stomp" => "0.47",
     "Net::Stomp::Frame" => 0,
     "Path::Class" => 0,
     "Throwable" => 0,
@@ -50,7 +50,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "2.5",
+  "VERSION" => "2.6",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -72,7 +72,7 @@ my %FallbackPrereqs = (
   "MooseX::Types::Moose" => 0,
   "MooseX::Types::Path::Class" => 0,
   "MooseX::Types::Structured" => 0,
-  "Net::Stomp" => 0,
+  "Net::Stomp" => "0.47",
   "Net::Stomp::Frame" => 0,
   "Path::Class" => 0,
   "Test::Deep" => 0,

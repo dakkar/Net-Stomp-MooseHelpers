@@ -14,6 +14,7 @@ use warnings;
          return 1;
      };
  }
+ sub current_host { return 0 };
  sub connect {
      push @calls,['connect',@_];
      return Net::Stomp::Frame->new({

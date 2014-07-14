@@ -1,11 +1,11 @@
 package Net::Stomp::MooseHelpers::ReconnectOnFailure;
-$Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '2.5';
+$Net::Stomp::MooseHelpers::ReconnectOnFailure::VERSION = '2.6';
 {
   $Net::Stomp::MooseHelpers::ReconnectOnFailure::DIST = 'Net-Stomp-MooseHelpers';
 }
 use Moose::Role;
 use Net::Stomp::MooseHelpers::Exceptions;
-use MooseX::Types::Common::Numeric qw(PositiveInt);
+use MooseX::Types::Common::Numeric qw(PositiveNum);
 use Carp;
 use Try::Tiny;
 use Time::HiRes 'sleep';
@@ -16,7 +16,7 @@ use namespace::autoclean;
 
 has connect_retry_delay => (
     is => 'ro',
-    isa => PositiveInt,
+    isa => PositiveNum,
     default => 15,
 );
 
@@ -79,7 +79,7 @@ Net::Stomp::MooseHelpers::ReconnectOnFailure - provide a reconnect-on-failure wr
 
 =head1 VERSION
 
-version 2.5
+version 2.6
 
 =head1 SYNOPSIS
 

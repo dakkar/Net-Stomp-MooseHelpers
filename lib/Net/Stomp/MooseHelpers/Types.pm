@@ -1,5 +1,5 @@
 package Net::Stomp::MooseHelpers::Types;
-$Net::Stomp::MooseHelpers::Types::VERSION = '2.5';
+$Net::Stomp::MooseHelpers::Types::VERSION = '2.6';
 {
   $Net::Stomp::MooseHelpers::Types::DIST = 'Net-Stomp-MooseHelpers';
 }
@@ -23,7 +23,7 @@ use namespace::autoclean;
 duck_type NetStompish, [qw(connect
                            subscribe unsubscribe
                            receive_frame ack
-                           send send_frame)];
+                           send send_frame current_host)];
 
 
 subtype Hostname, as Str; # maybe too lax?
@@ -85,7 +85,7 @@ Net::Stomp::MooseHelpers::Types - type definitions for Net::Stomp::MooseHelpers
 
 =head1 VERSION
 
-version 2.5
+version 2.6
 
 =head1 TYPES
 
