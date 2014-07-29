@@ -1,4 +1,5 @@
 {{$NEXT}}
+ - use SingleEncoding (thanks sergeyromanov)
 
 2.6       2014-07-14 17:16:36+01:00 Europe/London
  - require Net::Stomp 0.49
