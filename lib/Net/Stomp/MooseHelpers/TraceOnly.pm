@@ -122,6 +122,7 @@ has session_id => (
 # let's just take the original methods, they'll work
 *send = \&Net::Stomp::send;
 *send_transactional = \&Net::Stomp::send_transactional;
+*send_with_receipt = \&Net::Stomp::send_with_receipt;
 *_get_next_transaction = \&Net::Stomp::_get_next_transaction;
 
 __PACKAGE__->meta->make_immutable;
