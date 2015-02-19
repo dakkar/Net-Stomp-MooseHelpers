@@ -75,6 +75,7 @@ sub subscribe { return 1 }
 sub unsubscribe { return 1 }
 sub ack { return 1 }
 sub current_host { return 0 }
+sub receipt_timeout { return undef }
 
 has _last_frame => (
     is => 'rw',
@@ -83,7 +84,7 @@ has _last_frame => (
 sub receive_frame {
     my ($self) = @_;
 
-    # hack to make send_transactional happy
+    # hack to make send_with_receipt happy
     if ($self->_last_frame && $self->_last_frame->headers->{'receipt'}) {
         return Net::Stomp::Frame->new({
             command => 'RECEIPT',
