@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+2.9       2015-02-19 11:12:30+00:00 Europe/London
  - add receipt_timeout to TraceOnly, to support Net::Stomp 0.53
 
 2.8       2015-01-26 18:09:55+00:00 Europe/London
