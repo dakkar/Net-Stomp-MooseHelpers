@@ -56,7 +56,12 @@ around '_build_connection' => sub {
 package Net::Stomp::MooseHelpers::TraceOnly::Connection;{
 use Moose;
 use Carp;
+use Log::Any;
 require Net::Stomp;
+
+# newer Net::Stomp have a logger, so we need one too
+has logger => ( is => 'ro', lazy_build => 1 );
+sub _build_logger { Log::Any->get_logger() }
 
 has _tracing_object => ( is => 'rw' );
 
