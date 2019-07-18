@@ -131,6 +131,17 @@ that is, an arrayref of hashrefs, each of which describes how to
 connect to a single server. Defaults to C<< [ { hostname =>
 'localhost', port => 61613 } ] >>.
 
+If a server requires TLS, you can do C<< [ { hostname => $hostname,
+port => $port, ssl =>1 } ] >>.
+
+If a server requires authentication, you can pass the credentials in
+the C<connect_headers> slot here: C<< [ { hostname => $hostname, port
+=> $port, connect_headers => { login => $login, passcode => $passcode
+} } ] >>.
+
+If all servers require the same authentication, you can instead set
+the credentials in the L<< /C<connect_headers> >> attribute.
+
 =cut
 
 has servers => (
@@ -167,6 +178,11 @@ sub current_server {
 Global setting for connection headers (passed to
 L<Net::Stomp/connect>). Can be overridden by the C<connect_headers>
 slot in each element of L</servers>. Defaults to the empty hashref.
+
+If all servers require the same authentication, you can set the
+credentials here: C<< { login => $login, passcode => $passcode }
+>>. If different servers require different credentials, you should set
+them in the L<< /C<servers> >> attribute instead.
 
 =cut
 
